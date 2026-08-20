@@ -29,18 +29,21 @@ jobs:
 
     steps:
       - name: Quelltext holen
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Node einrichten
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Abhaengigkeiten installieren
         run: npm ci
 
       - name: Installer und ZIP bauen
+        # "--publish never" steckt im npm-Skript: sonst versucht
+        # electron-builder selbst, eine Release anzulegen, und verlangt
+        # dafuer einen Token. Das Hochladen macht der letzte Schritt.
         run: npm run dist
         env:
           # Ohne Zertifikat nicht signieren - sonst bricht der Bau ab.

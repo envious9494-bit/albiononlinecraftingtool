@@ -7,7 +7,7 @@
   "main": "electron/main.js",
   "scripts": {
     "start": "electron .",
-    "dist": "electron-builder --win",
+    "dist": "electron-builder --win --publish never",
     "bilder": "electron tools/bilder.js"
   },
   "build": {

@@ -3,6 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Was die Seite ueberhaupt nach draussen darf. Absichtlich eng:
+     Preise von den drei Servern des Data Project, Item-Bilder vom
+     Render Service, Schriften von Google. Sonst nichts - kein
+     fremdes Skript, kein Rahmen, kein Formularversand.
+     'unsafe-inline' fuer Stile brauchen die Ansichten, weil sie
+     Breiten und Balken direkt am Element setzen. -->
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'none';
+  script-src 'self';
+  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+  font-src https://fonts.gstatic.com;
+  img-src 'self' data: https://render.albiononline.com;
+  connect-src https://www.albion-online-data.com https://europe.albion-online-data.com
+              https://west.albion-online-data.com https://east.albion-online-data.com;
+  form-action 'none';
+  frame-ancestors 'none';
+  base-uri 'none';
+">
 <title>Albion Economy Toolkit</title>
 <meta name="description" content="Rechner-Sammlung für die Albion-Online-Wirtschaft: Refining, Crafting, Kochen, Tränke, Gewinn, Steuern, Fokus und Fame.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚒️</text></svg>">
