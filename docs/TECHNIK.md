@@ -1,8 +1,10 @@
 # Technische Dokumentation
 
+*[English version →](TECHNICAL.md)*
+
 Diese Datei beschreibt, **wie** das Toolkit rechnet und **woher** jede Zahl
-stammt. Fuer Installation und ersten Ueberblick siehe die
-[README im Projektstamm](../README.md).
+stammt. Für Installation und ersten Überblick siehe die
+[README im Projektstamm](../README.de.md).
 
 > Dieses Werkzeug ist ein privates Projekt und **nicht mit Sandbox Interactive
 > verbunden**. Albion Online sowie die Item-Namen und -Grafiken gehoeren
@@ -33,7 +35,6 @@ js/
     ui.js               DOM-Helfer, Segment-Schalter, Kurzmeldungen
     craft.js            Crafting-Mathematik (Kosten, Rückgabe, Steuern, Gewinn)
     router.js           Sidebar-Navigation und Hash-Routing
-  views/
     i18n.js             Sprache: Item-Namen und Oberfläche (de/en/es)
   views/
     _craftview.js       Gemeinsame Komponente für Refining / Crafting / Kochen / Tränke
@@ -46,13 +47,14 @@ js/
   app.js                Start: Sidebar verdrahten, Router starten
 data/
   meta.js               Server, Städte, Boni, Konstanten
-  items.js              1.334 Ausrüstungsrezepte
+  items.js              1.530 Ausrüstungsrezepte
   refining.js           35 Refining-Rezepte (T2–T8, alle 5 Ressourcen)
   consumables.js        84 Rezepte für Nahrung und Tränke
   fish.js               Fischsoßen und Seetang
   upgrade.js            Aufwertungsrezepte (Runen, Seelen, Relikte)
-  materials.js          899 Materialien mit Item-Werten
+  materials.js          Materialien mit Item-Werten
   categories.js         Kategoriebezeichnungen
+  sprachen.js           Wörterbuch der Oberfläche (deutsch → en/es)
 ```
 
 ### Warum `data/*.js` statt `data/*.json`
@@ -424,9 +426,8 @@ und werden nicht von Hand gepflegt. Beim Nachtragen des **Tracking-Toolkits**
 auf, dass der Auslesevorgang nur die XML-Typen `<weapon>` und
 `<equipmentitem>` kennt. Alles, was unter einem eigenen Typ steht, fehlte.
 
-Abgleich des heutigen Dumps gegen den Bestand. **76 davon sind inzwischen
-nachgetragen** (Gestaltwandler-Stäbe und avalonische Werkzeuge), die übrigen
-stehen noch aus:
+Abgleich des heutigen Dumps gegen den Bestand – inzwischen sind
+**209 Gegenstände nachgetragen**:
 
 | fehlt | Anzahl | Ursache |
 |---|---|---|
@@ -434,14 +435,14 @@ stehen noch aus:
 | ~~Avalonische Werkzeuge~~ | ~~35~~ | kamen erst nach dem letzten Auslesevorgang – **nachgetragen** |
 | ~~Fraktions- und Artefakt-Umhänge~~ | ~~79~~ | ohne `craftingcategory` – **nachgetragen** |
 | ~~Royal-Rüstungen~~ | ~~45~~ | dieselbe Ursache – **nachgetragen** |
+| ~~Avalonische Speisen~~ | ~~9~~ | neu im Spiel – **nachgetragen** |
+| Reparatur-Kits | 5 | eigener Typ `<furnitureitem>` |
+| T1-Ausrüstung | 2 | bewusst ausgeschlossen (`t >= 2`) |
 
 Damit ist die Lücke geschlossen. Ein erneuter Abgleich gegen den Dump findet
 nur noch **10 fehlende Gegenstände, und alle sind T1** – die Stufe, die seit
 Beginn bewusst ausgeschlossen ist (`t >= 2`), weil sie handelsmäßig keine
 Rolle spielt.
-| Avalonische Speisen | 9 | neu im Spiel |
-| Reparatur-Kits | 5 | eigener Typ `<furnitureitem>` |
-| T1-Ausrüstung | 2 | bewusst ausgeschlossen (`t >= 2`) |
 
 ### Nachgetragen: 76 Gegenstände
 

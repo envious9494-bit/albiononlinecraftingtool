@@ -1,260 +1,256 @@
 # Albion Economy Toolkit
 
-**Sieh auf einen Blick, womit sich in Albion Online gerade Silber verdienen
-lässt.** Herstellen, Aufwerten, Raffinieren, Kochen – mit echten Rezepten aus
-den Spieldaten und echten Marktpreisen.
+*[Deutsche Fassung →](README.de.md)*
 
-Läuft komplett auf deinem Rechner. **Kein Server, kein Konto, keine
-Anmeldung.** Entweder als Windows-Programm oder einfach, indem du eine
-HTML-Datei doppelklickst.
+**See at a glance where the silver is in Albion Online right now.** Crafting,
+enchanting, refining, cooking – with real recipes from the game data and real
+market prices.
 
-![Craft-Chancen](docs/bilder/02-craft-chancen.png)
+Runs entirely on your own machine. **No server, no account, no sign-up.**
+Either as a Windows program, or simply by double-clicking an HTML file.
 
----
-
-## Inhalt
-
-- [Was es kann](#was-es-kann)
-- [Installieren](#installieren)
-- [Die ersten fünf Minuten](#die-ersten-fünf-minuten)
-- [Woher die Zahlen kommen](#woher-die-zahlen-kommen)
-- [Häufige Fragen](#häufige-fragen)
-- [Für Entwickler](#für-entwickler)
+![Crafting Deals](docs/bilder/02-craft-chancen.png)
 
 ---
 
-## Was es kann
+## Contents
 
-### Craft-Chancen: alles Herstellbare auf einen Blick
-
-Prüft **jeden herstellbaren Gegenstand** – Ausrüstung, raffinierte Rohstoffe,
-Nahrung, Tränke – gegen die aktuellen Marktpreise und sortiert nach Gewinn,
-Marge oder Silber je Fokuspunkt. Rückgaberate, Stationsgebühr, Steuer und
-Ordergebühr sind eingerechnet.
-
-Ein Klick auf eine Zeile öffnet den Einzelrechner mit genau diesem Gegenstand.
-
-![Craft-Chancen](docs/bilder/02-craft-chancen.png)
-
-### Aufwertung: Runen, Seelen und Relikte
-
-Sucht über **alle aufwertbaren Gegenstände in jeder Stufe und jedem Weg**
-(.0 → .1 bis .2 → .3), was sich lohnt. Aufwerten kostet kein Silber und keine
-Nutzungsgebühr – nur das Material. Steuern und Ordergebühren fallen wie üblich an.
-
-![Aufwertung](docs/bilder/03-aufwertung.png)
-
-### Einzelrechner für jeden Fall
-
-Crafting, Refining, Kochen, Tränke, Serien, Gewinn, Materialkosten, Steuer,
-Fokus, Ressourcenwert, Fame – sechzehn Ansichten, alle mit denselben
-Einstellungen für Stadt, Gebühr, Steuer und Premium.
-
-![Crafting-Rechner](docs/bilder/04-crafting-rechner.png)
-
-### Koch-Rechner samt Gewinnübersicht
-
-Jedes Gericht mit Zutatenliste, Rückgabe und Nutzungsgebühr. Darunter eine
-Übersicht, die eine ganze Kategorie durchrechnet – damit man sofort sieht,
-was sich überhaupt lohnt.
-
-![Koch-Rechner](docs/bilder/05-koch-rechner.png)
-
-![Gewinnübersicht im Koch-Rechner](docs/bilder/06-koch-gewinnuebersicht.png)
-
-### Dunkle Fassung
-
-![Dunkle Fassung](docs/bilder/07-dunkel.png)
-
-### Farben für Rot-Grün-Schwäche
-
-Der Schalter **Kontrast** ersetzt Rot und Grün durch Blau und Zinnober und
-stellt Gewinn und Verlust zusätzlich ein Dreieck voran – Vorzeichen sind dann
-auch ohne Farbe erkennbar.
-
-![Kontrastfarben](docs/bilder/08-kontrastfarben.png)
-
-### Drei Sprachen
-
-Deutsch, Englisch, Spanisch. Die Item-Namen sind dabei **nicht übersetzt**,
-sondern aus der Lokalisierung des Spiels selbst übernommen – im Werkzeug steht
-genau der Name, den du auch im Spiel siehst.
-
-![Einstellungen](docs/bilder/09-einstellungen.png)
+- [What it does](#what-it-does)
+- [Installing](#installing)
+- [The first five minutes](#the-first-five-minutes)
+- [Where the numbers come from](#where-the-numbers-come-from)
+- [Questions people ask](#questions-people-ask)
+- [For developers](#for-developers)
 
 ---
 
-## Installieren
+## What it does
 
-Drei Wege. **Weg 2 braucht überhaupt keine Installation.**
+### Crafting Deals: everything craftable at a glance
 
-### Weg 1: Windows-Programm (empfohlen)
+Checks **every craftable item** – equipment, refined resources, food, potions –
+against current market prices and sorts by profit, margin or silver per focus
+point. Return rate, station fee, sales tax and order fee are all included.
 
-1. Auf der Seite [**Releases**](https://github.com/envious9494-bit/albiononlinecraftingtool/releases/latest)
-   die Datei `AlbionToolkit-Setup-1.0.0.exe` herunterladen.
-2. Doppelklicken.
-3. **Windows meldet sich mit einem blauen Fenster:** „Der Computer wurde durch
-   Windows geschützt". Das ist normal – die Datei ist nicht signiert, weil eine
-   Signatur mehrere hundert Euro im Jahr kostet.
-   Klicke auf **„Weitere Informationen"** und dann auf **„Trotzdem ausführen"**.
-4. Das Programm landet im Startmenü und als Verknüpfung auf dem Desktop.
+Clicking a row opens the single-item calculator with exactly that item loaded.
 
-Es installiert nur für deinen Benutzer, braucht also **keine
-Administratorrechte**.
+![Crafting Deals](docs/bilder/02-craft-chancen.png)
 
-> Wer die Warnung lieber ganz vermeiden möchte, nimmt Weg 2 – dort wird nichts
-> ausgeführt, sondern nur eine Seite im Browser geöffnet.
+### Enchanting: runes, souls and relics
 
-### Weg 2: Nur die HTML-Datei öffnen
+Searches **every enchantable item at every tier and on every path** (.0 → .1 up
+to .2 → .3) for what is worth doing. Enchanting costs no silver and no station
+fee – only the material. Tax and order fees apply as usual.
 
-Ganz ohne Installation, funktioniert auf jedem Betriebssystem:
+![Enchanting](docs/bilder/03-aufwertung.png)
 
-1. Oben auf der Projektseite auf **Code → Download ZIP** klicken.
-2. Das ZIP entpacken.
-3. **`index.html` doppelklicken.**
+### A calculator for every case
 
-Das war alles. Die Seite öffnet sich im Browser und kann sofort alles.
+Crafting, refining, cooking, potions, batches, profit, material costs, tax,
+focus, item value, fame – sixteen views, all sharing the same settings for
+city, fee, tax and premium.
 
-Warum das geht: Das Toolkit ist reines HTML, CSS und JavaScript ohne
-Bauschritt. Die Spieldaten liegen als fertige `.js`-Dateien daneben, die
-Marktpreise holt die Seite direkt vom Albion Online Data Project.
+![Crafting calculator](docs/bilder/04-crafting-rechner.png)
 
-### Weg 3: Portable Fassung
+### Cooking calculator with a profit overview
 
-Auf der Seite [Releases](https://github.com/envious9494-bit/albiononlinecraftingtool/releases/latest)
-liegt zusätzlich `AlbionToolkit-1.0.0.zip`. Entpacken, `Albion Toolkit.exe`
-starten – nichts wird installiert, alles bleibt im Ordner. Praktisch für einen
-USB-Stick.
+Every dish with its ingredient list, return rate and station fee. Below it, an
+overview that calculates a whole category at once – so you can see immediately
+what is even worth cooking.
 
----
+![Cooking calculator](docs/bilder/05-koch-rechner.png)
 
-## Die ersten fünf Minuten
+![Profit overview in the cooking calculator](docs/bilder/06-koch-gewinnuebersicht.png)
 
-1. **Marktpreise laden.** In jeder Ansicht gibt es dafür einen Knopf. Preise
-   werden nie von selbst geladen – nur auf Knopfdruck.
-2. **Server einstellen.** Oben rechts: Europa, Amerika oder Asien. Falscher
-   Server heißt falsche Preise.
-3. **Stadt wählen.** Wo kaufst du dein Material, wo verkaufst du das Ergebnis?
-4. **Rückgaberate setzen.** Kein Bonus 15,2 % · Fokus 43,5 % · Stadtbonus
-   36,7 % · Stadtbonus + Fokus 53,9 %. Für ein Hideout gibst du den Wert ein,
-   den dir die Station dort anzeigt.
-5. **Craft-Chancen öffnen** und suchen lassen.
+### Dark theme
 
-Die Übersicht zeigt jederzeit, wie alt deine Marktdaten sind und welche
-Rechner es gibt:
+![Dark theme](docs/bilder/07-dunkel.png)
 
-![Übersicht](docs/bilder/01-uebersicht.png)
+### Colours for red-green colour blindness
 
-### Zwei Dinge, die man wissen sollte
+The **Contrast** switch replaces red and green with blue and vermilion, and
+puts a triangle in front of profit and loss – so the sign is readable without
+relying on colour at all.
 
-**Gerechnet wird immer mit Normal**, der schlechtesten Qualität. Beim
-Herstellen bekommt man die Qualität nicht geschenkt – wer damit rechnet, sie zu
-treffen, rechnet sich reich.
+![Contrast colours](docs/bilder/08-kontrastfarben.png)
 
-**Preise sind nur so gut wie ihr letzter Scan.** Wenn niemand den Markt in
-deiner Stadt geöffnet hat, sind die Daten alt. Das Toolkit zeigt zu jedem
-Preis sein Alter an und wirft zu alte Zeilen von selbst heraus.
+### Three languages
+
+German, English, Spanish. The item names are **not translated** – they are
+taken from the game's own localisation, so the tool shows exactly the name you
+see in the game.
+
+![Settings](docs/bilder/09-einstellungen.png)
 
 ---
 
-## Woher die Zahlen kommen
+## Installing
+
+Three ways. **Way 2 needs no installation at all.**
+
+### Way 1: Windows program (recommended)
+
+1. On the [**Releases**](https://github.com/envious9494-bit/albiononlinecraftingtool/releases/latest)
+   page, download `AlbionToolkit-Setup-1.0.0.exe`.
+2. Double-click it.
+3. **Windows will show a blue box:** "Windows protected your PC". This is
+   expected – the file is not code-signed, because a signature costs several
+   hundred euros a year.
+   Click **"More info"**, then **"Run anyway"**.
+4. The program appears in the Start menu and as a desktop shortcut.
+
+It installs for your user only, so it needs **no administrator rights**.
+
+> If you would rather avoid the warning entirely, take Way 2 – nothing is
+> executed there, a page just opens in your browser.
+
+### Way 2: Just open the HTML file
+
+No installation, works on any operating system:
+
+1. On the project page, click **Code → Download ZIP**.
+2. Unpack the ZIP.
+3. **Double-click `index.html`.**
+
+That is all. The page opens in your browser and can do everything right away.
+
+Why this works: the toolkit is plain HTML, CSS and JavaScript with no build
+step. The game data sits next to it as ready-made `.js` files, and market
+prices are fetched straight from the Albion Online Data Project.
+
+### Way 3: Portable version
+
+The [Releases](https://github.com/envious9494-bit/albiononlinecraftingtool/releases/latest)
+page also carries `AlbionToolkit-1.0.0.zip`. Unpack it, run
+`Albion Toolkit.exe` – nothing is installed, everything stays in the folder.
+Handy for a USB stick.
+
+---
+
+## The first five minutes
+
+1. **Load market prices.** Every view has a button for it. Prices are never
+   fetched on their own – only when you press it.
+2. **Pick your server.** Top right: Europe, Americas or Asia. The wrong server
+   means the wrong prices.
+3. **Choose your cities.** Where do you buy your material, where do you sell
+   the result?
+4. **Set the return rate.** No bonus 15.2 % · Focus 43.5 % · City bonus 36.7 %
+   · City bonus + focus 53.9 %. For a hideout, enter the value the station
+   there shows you.
+5. **Open Crafting Deals** and let it search.
+
+The dashboard always shows how old your market data is and which calculators
+exist:
+
+![Dashboard](docs/bilder/01-uebersicht.png)
+
+### Two things worth knowing
+
+**Everything is calculated at Normal**, the lowest quality. Crafting does not
+hand you quality for free – anyone who counts on hitting it is doing wishful
+maths.
+
+**A price is only as good as its last scan.** If nobody has opened the market
+in your city recently, the data is old. The toolkit shows the age of every
+price and drops rows whose data is too old.
+
+---
+
+## Where the numbers come from
 
 | | |
 |---|---|
-| Rezepte, Item-Werte, Fokuskosten | offizielle Spieldaten (`ao-bin-dumps`) |
-| Item-Namen in drei Sprachen | Lokalisierung des Spielclients |
-| Marktpreise und Handelsmengen | [Albion Online Data Project](https://www.albion-online-data.com/) |
-| Item-Bilder | Albion Online Render Service |
+| Recipes, item values, focus costs | official game data (`ao-bin-dumps`) |
+| Item names in three languages | the game client's own localisation |
+| Market prices and trade volumes | [Albion Online Data Project](https://www.albion-online-data.com/) |
+| Item images | Albion Online Render Service |
 
-Die Marktpreise stammen von Spielern, die den **Data-Project-Client**
-mitlaufen lassen. Er liest beim Spielen mit, welche Marktfenster du öffnest,
-und meldet die Preise an die öffentliche Sammelstelle. Wer selbst frische
-Preise für seine Stadt will, lässt ihn nebenher laufen und öffnet im Spiel die
-Märkte, die ihn interessieren.
+Market prices come from players who run the **Data Project client**. While
+they play, it reads along which market windows they open and reports the
+prices to the public collection point. If you want fresh prices for your own
+city, run it alongside the game and open the markets you care about.
 
-Diese Seite kann **nichts direkt aus dem Spiel lesen**. Sie läuft ohne Server
-und ohne Zugriff auf Albion.
+This page **cannot read anything from the game**. It runs without a server and
+without any access to Albion.
 
-**1.530** Ausrüstungsrezepte, **93** Gerichte und Tränke, **1.207**
-Materialien mit Item-Werten.
-
----
-
-## Häufige Fragen
-
-**Greift das ins Spiel ein?**
-Nein. Dieses Toolkit hat mit dem Spiel überhaupt keine Verbindung: es liest
-nichts aus, verändert nichts und läuft völlig getrennt davon. Es rechnet mit
-Rezepten aus den öffentlichen Spieldaten und mit Preisen, die andere Spieler
-gesammelt haben.
-
-Der **Data-Project-Client**, mit dem diese Preise gesammelt werden, ist ein
-eigenes Programm und nicht Teil dieses Projekts. Ob du ihn einsetzen möchtest,
-entscheidest du selbst – die Bedingungen dazu stehen auf
-[albion-online-data.com](https://www.albion-online-data.com/).
-
-**Werden meine Daten irgendwohin geschickt?**
-Nein. Alles liegt in deinem Browser (bzw. im Programm). Es gibt keinen Server,
-kein Konto und keine Übertragung deiner Eingaben. Die einzige Verbindung nach
-außen holt Marktpreise ab – und zwar erst, wenn du auf den Knopf drückst.
-
-**Warum sind manche Felder leer?**
-Weil für diesen Gegenstand in dieser Stadt niemand kürzlich den Markt geöffnet
-hat. Du kannst den Preis von Hand eintragen – gold umrandete Felder sind
-deine eigenen und überschreiben den Marktwert.
-
-**Warum weicht der Gewinn von dem ab, was ich im Spiel sehe?**
-Prüf drei Dinge: den Server oben rechts, das Alter der Preise, und ob deine
-Rückgaberate stimmt. Der häufigste Fehler ist eine veraltete Preisangabe in
-einer Stadt, die selten gescannt wird.
-
-**Ich bin farbenblind / kann das schlecht lesen.**
-Oben in der Kopfzeile: **Dunkel** für die dunkle Fassung, **Kontrast** für
-Farben, die bei Rot-Grün-Schwäche unterscheidbar bleiben, **Normal/Kompakt**
-für die Schriftgröße.
+**1,530** equipment recipes, **93** dishes and potions, **1,207** materials
+with item values.
 
 ---
 
-## Für Entwickler
+## Questions people ask
 
-Ausführliche technische Dokumentation – jede Formel mit Quelle und Nachrechnung –
-steht in **[docs/TECHNIK.md](docs/TECHNIK.md)**.
+**Does this interfere with the game?**
+No. This toolkit has no connection to the game whatsoever: it reads nothing,
+changes nothing and runs completely separately. It calculates using recipes
+from the public game data and prices other players have collected.
+
+The **Data Project client** that collects those prices is a separate program
+and not part of this project. Whether you want to run it is your own decision –
+its terms are on [albion-online-data.com](https://www.albion-online-data.com/).
+
+**Is any of my data sent anywhere?**
+No. Everything stays in your browser (or in the program). There is no server,
+no account and no transfer of anything you type. The only outbound connection
+fetches market prices – and only once you press the button.
+
+**Why are some fields empty?**
+Because nobody has opened the market for that item in that city recently. You
+can type the price in by hand – gold-outlined fields are your own and override
+the market value.
+
+**Why does the profit differ from what I see in the game?**
+Check three things: the server in the top right, the age of the prices, and
+whether your return rate is right. The most common cause is a stale price in a
+city that rarely gets scanned.
+
+**I am colour blind / I find this hard to read.**
+In the header bar: **Dark** for the dark theme, **Contrast** for colours that
+stay distinguishable with red-green colour blindness, **Normal/Compact** for
+text size.
+
+---
+
+## For developers
+
+Full technical documentation – every formula with its source and a worked
+example – is in **[docs/TECHNICAL.md](docs/TECHNICAL.md)**.
 
 ```
-index.html          alles beginnt hier
-css/                Gestaltung, Farben als Variablen
-js/core/            Markt, Rechenkern, Router, Sprache
-js/views/           die sechzehn Ansichten
-data/               Spieldaten als fertige .js-Dateien
-electron/           Fenster für die Windows-Fassung
-tools/bilder.js     nimmt die Bildschirmfotos oben auf
+index.html          everything starts here
+css/                styling, colours as custom properties
+js/core/            market, calculation core, router, language
+js/views/           the sixteen views
+data/               game data as ready-made .js files
+electron/           window for the Windows version
+tools/bilder.js     takes the screenshots above
 ```
 
-Der Rechner selbst braucht **keinen Bauschritt**: klassische `<script>`-Tags,
-keine Module, keine Abhängigkeiten. `npm` wird nur gebraucht, um das
-Windows-Programm zu bauen.
+The calculator itself needs **no build step**: classic `<script>` tags, no
+modules, no dependencies. `npm` is only needed to build the Windows program.
 
 ```bash
 npm install
-npm start      # im Electron-Fenster starten
-npm run dist   # Installer und ZIP nach dist/ bauen
-npm run bilder # Bildschirmfotos für die README neu aufnehmen
+npm start      # run in an Electron window
+npm run dist   # build installer and ZIP into dist/
+npm run bilder # retake the screenshots for the README
 ```
 
 ---
 
-## Spenden
+## Donations
 
-Das Toolkit ist kostenlos und bleibt es. Wer mag, kann mir
-[**freiwillig etwas spenden**](https://www.paypal.com/paypalme/DevEnvi24) –
-ohne Gegenleistung.
+The toolkit is free and stays free. If you feel like it, you can
+[**donate voluntarily**](https://www.paypal.com/paypalme/DevEnvi24) – with
+nothing in return.
 
 ---
 
-## Lizenz
+## Licence
 
-[MIT](LICENSE) – mach damit, was du willst.
+[MIT](LICENSE) – do what you like with it.
 
-Dieses Werkzeug ist ein privates Projekt und **nicht mit Sandbox Interactive
-verbunden**. Albion Online sowie die Item-Namen und -Grafiken gehören Sandbox
-Interactive GmbH.
+This tool is a private project and **not affiliated with Sandbox Interactive**.
+Albion Online, its item names and its graphics belong to Sandbox Interactive
+GmbH.
