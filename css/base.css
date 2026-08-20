@@ -1,0 +1,96 @@
+/* ==========================================================================
+   Reset, Grundtypografie und kleine Hilfsklassen.
+   ========================================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scrollbar-color: var(--bronze) var(--leather); }
+
+body {
+  margin: 0;
+  color: var(--txt);
+  font: var(--fs-md)/1.5 var(--font);
+  -webkit-font-smoothing: antialiased;
+  /* Dunkles Leder als Grund - das Pergament der Inhaltsflaeche liegt darauf.
+     Die beiden Verlaeufe geben ihm eine leichte Maserung, damit es nicht wie
+     eine flache Farbflaeche wirkt. */
+  background:
+    radial-gradient(1200px 600px at 20% -10%, rgba(216, 180, 90, .07), transparent 60%),
+    repeating-linear-gradient(115deg, rgba(0, 0, 0, .16) 0 2px, transparent 2px 7px),
+    var(--bg);
+}
+
+a { color: var(--gold); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Ueberschriften tragen die Inschriften-Schrift - das ist der Zug, der die
+   Oberflaeche sofort nach Albion aussehen laesst. */
+h1, h2, h3, h4 {
+  margin: 0; font-weight: 600;
+  font-family: var(--font-display);
+  letter-spacing: .4px;
+}
+h1 { font-size: var(--fs-xl); }
+h2 { font-size: var(--fs-lg); }
+h3 { font-size: var(--fs-md); text-transform: uppercase; letter-spacing: 1.1px; }
+p  { margin: 0; }
+
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible { outline: 2px solid var(--gold2); outline-offset: 2px; }
+
+/* Eingaben wirken eingelassen, nicht aufgesetzt. */
+input, select, textarea {
+  font: inherit;
+  color: var(--txt);
+  background: var(--bg2);
+  border: 1px solid var(--line2);
+  border-radius: var(--r-sm);
+  padding: 6px 10px;
+  outline: none;
+  box-shadow: inset 0 1px 3px rgba(90, 66, 24, .22);
+  transition: border-color var(--t-fast), box-shadow var(--t-fast);
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--gold2);
+  box-shadow: inset 0 1px 3px rgba(90, 66, 24, .18), 0 0 0 3px var(--goldDim);
+}
+input:disabled, select:disabled { opacity: .5; cursor: not-allowed; }
+select { cursor: pointer; }
+input.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Schalter: Messingriegel statt Kunststoff-Toggle ------------------------ */
+input[type=checkbox] {
+  appearance: none; width: 34px; height: 19px; margin: 0; flex: none;
+  border-radius: var(--r-pill); background: var(--bg2); border: 1px solid var(--line2);
+  position: relative; cursor: pointer; padding: 0;
+  box-shadow: inset 0 1px 3px rgba(90, 66, 24, .3);
+  transition: background var(--t-fast), border-color var(--t-fast);
+}
+input[type=checkbox]::after {
+  content: ""; position: absolute; top: 2px; left: 2px;
+  width: 13px; height: 13px; border-radius: 50%;
+  background: linear-gradient(180deg, #fff6e0, #c2ab7f);
+  box-shadow: 0 1px 2px rgba(60, 42, 12, .5);
+  transition: left var(--t-fast), background var(--t-fast);
+}
+input[type=checkbox]:checked {
+  background: linear-gradient(180deg, var(--bronze2), var(--bronze));
+  border-color: var(--bronze);
+}
+input[type=checkbox]:checked::after { left: 17px; background: linear-gradient(180deg, #ffeec2, #d8b45a); }
+
+/* Hilfsklassen ----------------------------------------------------------- */
+.mut   { color: var(--mut); font-weight: 400; }
+.faint { color: var(--faint); }
+.pos   { color: var(--green); font-weight: 600; }
+.neg   { color: var(--red); font-weight: 600; }
+.warn  { color: var(--amber); }
+.num-t { font-variant-numeric: tabular-nums; }
+.nowrap{ white-space: nowrap; }
+[hidden] { display: none !important; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}

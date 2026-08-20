@@ -1,0 +1,15 @@
+# Werkzeugkette und Bauergebnisse - gehoeren nicht ins Repo.
+# Der eigentliche Rechner liegt in index.html, css/, js/ und data/ und
+# braucht nichts davon: er laeuft per Doppelklick.
+node_modules/
+dist/
+
+# package-lock.json bleibt drin: der Bau auf GitHub nutzt "npm ci" und
+# braucht die Datei.
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Werkzeuge, die nicht ins Repo gehoeren
+.claude/

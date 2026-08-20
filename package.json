@@ -1,0 +1,67 @@
+{
+  "name": "albion-toolkit",
+  "productName": "Albion Toolkit",
+  "version": "1.0.0",
+  "description": "Rechner für die Wirtschaft von Albion Online – Refining, Crafting, Aufwertung, Chancen",
+  "private": true,
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win",
+    "bilder": "electron tools/bilder.js"
+  },
+  "build": {
+    "appId": "de.albion-toolkit.app",
+    "productName": "Albion Toolkit",
+    "copyright": "Nicht mit Sandbox Interactive verbunden",
+    "files": [
+      "index.html",
+      "css/**/*",
+      "js/**/*",
+      "data/**/*",
+      "electron/**/*",
+      "build/icon.ico"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Albion Toolkit",
+      "artifactName": "AlbionToolkit-Setup-${version}.${ext}",
+      "deleteAppDataOnUninstall": false
+    },
+    "directories": {
+      "output": "dist"
+    },
+    "artifactName": "AlbionToolkit-${version}.${ext}"
+  },
+  "devDependencies": {
+    "electron": "^43.4.1",
+    "electron-builder": "^26.15.3"
+  },
+  "author": "DevEnvi24",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/envious9494-bit/albiononlinecraftingtool.git"
+  }
+}

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Albion Economy Toolkit</title>
+<meta name="description" content="Rechner-Sammlung für die Albion-Online-Wirtschaft: Refining, Crafting, Kochen, Tränke, Gewinn, Steuern, Fokus und Fame.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚒️</text></svg>">
+
+<!-- Inschriften- und Fliesstextschrift. Ohne Netz greifen die
+     Ersatzketten in tokens.css - die Oberflaeche bleibt benutzbar. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Open+Sans:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <!-- ================= Sidebar ================= -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-head">
+      <span class="sb-mark">⚒</span>
+      <span class="sb-title">Albion Toolkit<small>Handelskontor</small></span>
+    </div>
+    <nav class="sb-nav" id="sbNav"></nav>
+    <div class="sb-foot">
+      <button id="sbToggle" title="Seitenleiste ein-/ausklappen">
+        <span class="sb-ico">⟨⟩</span><span>Einklappen</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ================= Inhalt ================= -->
+  <div class="content">
+    <header class="topbar">
+      <button id="burger" title="Menü">☰</button>
+      <div class="tb-crumb">
+        <h1 id="tbTitle">Dashboard</h1>
+        <span id="tbSub"></span>
+      </div>
+      <div class="tb-right">
+        <div class="seg" id="themeSeg" title="Helle Pergament- oder dunkle Fassung">
+          <button data-v="parchment">Hell</button><button data-v="dark">Dunkel</button>
+        </div>
+        <div class="seg" id="colorSeg" title="Farbmodus. „Kontrast“ ersetzt Rot und Grün durch Blau und Zinnober und stellt Gewinn und Verlust zusätzlich ein Dreieck voran – für Rot-Grün-Schwäche.">
+          <button data-v="normal">Farben</button><button data-v="cb">Kontrast</button>
+        </div>
+        <div class="seg" id="densitySeg" title="Kompakt lässt breite Tabellen auf den Bildschirm passen">
+          <button data-v="normal">Normal</button><button data-v="kompakt">Kompakt</button>
+        </div>
+        <button class="btn sm" id="sideToggle" title="Einstellungsspalte ein- oder ausblenden – gibt den Tabellen die volle Breite">Spalte</button>
+        <label>Sprache
+          <select id="langSel" title="Oberfläche und Item-Namen. Die Namen kommen aus der Lokalisierung des Spiels selbst."></select>
+        </label>
+        <label>Server
+          <select id="globalServer" title="Gilt für alle Rechner"></select>
+        </label>
+      </div>
+    </header>
+
+    <main id="viewHost"></main>
+
+    <footer class="appfoot">
+      <span>
+        Nicht mit Sandbox Interactive verbunden · Preise vom
+        <a href="https://www.albion-online-data.com/" target="_blank" rel="noopener">Albion Online Data Project</a>
+      </span>
+      <span class="appfoot-right">
+        Kostenlos und ohne Konto. Wer mag, kann mir
+        <a href="https://www.paypal.com/paypalme/DevEnvi24" target="_blank" rel="noopener"
+           title="Öffnet PayPal.Me im Browser">freiwillig etwas spenden</a>
+        – ohne Gegenleistung.
+      </span>
+    </footer>
+  </div>
+
+  <div id="navScrim"></div>
+</div>
+
+<noscript>
+  <div style="padding:24px;color:#e7e4dc;background:#0e1116">
+    Dieses Toolkit rechnet vollständig im Browser – bitte JavaScript aktivieren.
+  </div>
+</noscript>
+
+<!-- ================= Daten (reines JSON in .js-Huelle) =================
+     Als .js ausgeliefert, damit die Seite per Doppelklick (file://) laeuft:
+     fetch() auf lokale .json-Dateien blockiert der Browser aus Sicherheitsgruenden. -->
+<script src="data/sprachen.js"></script>
+<script src="data/meta.js"></script>
+<script src="data/categories.js"></script>
+<script src="data/materials.js"></script>
+<script src="data/items.js"></script>
+<script src="data/consumables.js"></script>
+<script src="data/refining.js"></script>
+<script src="data/fish.js"></script>
+<script src="data/upgrade.js"></script>
+
+<!-- ================= Kern ================= -->
+<script src="js/core/format.js"></script>
+<script src="js/core/store.js"></script>
+<script src="js/core/market.js"></script>
+<script src="js/core/ui.js"></script>
+<script src="js/core/craft.js"></script>
+<script src="js/core/i18n.js"></script>
+
+<!-- ================= Ansichten ================= -->
+<script src="js/views/_craftview.js"></script>
+<script src="js/views/dashboard.js"></script>
+<script src="js/views/refining.js"></script>
+<script src="js/views/crafting.js"></script>
+<script src="js/views/cooking.js"></script>
+<script src="js/views/potion.js"></script>
+<script src="js/views/batch.js"></script>
+<script src="js/views/upgrade.js"></script>
+<script src="js/views/craftscan.js"></script>
+<script src="js/views/opportunity.js"></script>
+<script src="js/views/profit.js"></script>
+<script src="js/views/material.js"></script>
+<script src="js/views/tax.js"></script>
+<script src="js/views/focus.js"></script>
+<script src="js/views/resource.js"></script>
+<script src="js/views/fame.js"></script>
+<script src="js/views/settings.js"></script>
+
+<!-- ================= Start ================= -->
+<script src="js/core/router.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

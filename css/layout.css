@@ -1,0 +1,208 @@
+/* ==========================================================================
+   App-Rahmen: Lederleiste links, Messingbalken oben, Pergament in der Mitte.
+   ========================================================================== */
+.app {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  min-height: 100vh;
+  transition: grid-template-columns var(--t-slow);
+}
+.app.collapsed { grid-template-columns: var(--sidebar-w-collapsed) 1fr; }
+
+/* --- Sidebar ------------------------------------------------------------ */
+.sidebar {
+  position: sticky; top: 0; height: 100vh;
+  display: flex; flex-direction: column;
+  background:
+    repeating-linear-gradient(102deg, rgba(0, 0, 0, .12) 0 2px, transparent 2px 8px),
+    linear-gradient(180deg, var(--leather3) 0%, var(--leather2) 30%, var(--leather) 100%);
+  /* Bronzekante als Abschluss zum Pergament */
+  border-right: 1px solid #000;
+  box-shadow: inset -3px 0 0 var(--bronze), 3px 0 14px rgba(0, 0, 0, .45);
+  overflow: hidden;
+  z-index: 40;
+}
+.sb-head {
+  display: flex; align-items: center; gap: var(--s3);
+  height: var(--topbar-h); padding: 0 var(--s4);
+  border-bottom: 1px solid var(--bronze);
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .5);
+  flex: none;
+}
+.sb-mark {
+  width: 32px; height: 32px; flex: none;
+  display: grid; place-items: center;
+  background: linear-gradient(180deg, var(--bronze2), var(--bronze));
+  border: 1px solid var(--brass);
+  border-radius: var(--r-sm); color: #fff3d4; font-size: 16px;
+  box-shadow: inset 0 1px 0 rgba(255, 235, 180, .4);
+}
+.sb-title { font-family: var(--font-display); font-weight: 700; font-size: var(--fs-md);
+  white-space: nowrap; color: var(--brass); letter-spacing: .5px; }
+.sb-title small { display: block; font-family: var(--font); font-size: var(--fs-xs);
+  color: var(--mut); font-weight: 400; letter-spacing: 0; }
+
+.sb-nav { flex: 1; overflow-y: auto; padding: var(--s3) 0 var(--s5); }
+.sb-nav::-webkit-scrollbar { width: 8px; }
+.sb-nav::-webkit-scrollbar-thumb { background: var(--bronze); border-radius: var(--r-pill); }
+
+.sb-group { margin-top: var(--s4); }
+.sb-group:first-child { margin-top: 0; }
+.sb-label {
+  padding: 0 var(--s4) var(--s2);
+  font-family: var(--font-display);
+  font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 1.4px;
+  color: var(--bronze2); white-space: nowrap;
+}
+.sb-link {
+  display: flex; align-items: center; gap: var(--s3);
+  width: 100%; padding: 8px var(--s4);
+  color: var(--txt2); font-size: var(--fs-md); text-align: left;
+  border-left: 3px solid transparent;
+  transition: background var(--t-fast), color var(--t-fast), border-color var(--t-fast);
+  white-space: nowrap;
+}
+.sb-link:hover { background: rgba(216, 180, 90, .1); color: #fff3d4; text-decoration: none; }
+.sb-link.on {
+  background: linear-gradient(90deg, rgba(216, 180, 90, .26), rgba(216, 180, 90, .04));
+  color: var(--brass);
+  border-left-color: var(--brass); font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .5);
+}
+.sb-ico { width: 18px; flex: none; text-align: center; font-size: 15px; opacity: .95; }
+.sb-txt { overflow: hidden; text-overflow: ellipsis; }
+
+.sb-foot { flex: none; padding: var(--s3) var(--s4); border-top: 1px solid var(--bronze); }
+#sbToggle {
+  display: flex; align-items: center; gap: var(--s3);
+  width: 100%; padding: 6px 0; color: var(--mut); font-size: var(--fs-sm);
+  transition: color var(--t-fast);
+}
+#sbToggle:hover { color: var(--brass); }
+
+/* eingeklappt: nur Symbole */
+.app.collapsed .sb-title,
+.app.collapsed .sb-label,
+.app.collapsed .sb-txt,
+.app.collapsed #sbToggle span:last-child { display: none; }
+.app.collapsed .sb-link { justify-content: center; padding-inline: 0; }
+.app.collapsed .sb-head { justify-content: center; padding: 0; }
+.app.collapsed #sbToggle { justify-content: center; }
+.app.collapsed .sb-group { margin-top: var(--s2); }
+.app.collapsed .sb-group + .sb-group { border-top: 1px solid var(--line2); padding-top: var(--s2); }
+
+/* --- Topbar ------------------------------------------------------------- */
+.topbar {
+  position: sticky; top: 0; z-index: 30;
+  display: flex; align-items: center; gap: var(--s4);
+  height: var(--topbar-h); padding: 0 var(--s5);
+  background:
+    repeating-linear-gradient(102deg, rgba(0, 0, 0, .1) 0 2px, transparent 2px 8px),
+    linear-gradient(180deg, var(--leather3), var(--leather));
+  border-bottom: 1px solid #000;
+  box-shadow: inset 0 -3px 0 var(--bronze), 0 3px 12px rgba(0, 0, 0, .35);
+}
+.tb-crumb { display: flex; align-items: baseline; gap: var(--s3); min-width: 0; }
+.tb-crumb h1 { font-size: var(--fs-lg); white-space: nowrap; color: var(--brass); }
+.tb-crumb span { font-size: var(--fs-sm); color: var(--mut);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tb-right { margin-left: auto; display: flex; align-items: center; gap: var(--s3); flex: none; }
+.tb-right label { display: flex; align-items: center; gap: var(--s2); font-size: var(--fs-sm); color: var(--mut); }
+#burger { display: none; font-size: 19px; color: var(--mut); padding: 4px 8px; }
+#burger:hover { color: var(--brass); }
+
+/* --- Inhalt: das Pergamentblatt ----------------------------------------- */
+.content { min-width: 0; display: flex; flex-direction: column; }
+.view {
+  padding: var(--s5);
+  animation: viewIn var(--t-slow);
+}
+@keyframes viewIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: none; }
+}
+.view-head { margin-bottom: var(--s4); }
+.view-head h2 { font-size: var(--fs-2xl); color: var(--gold); }
+.view-head p  { margin-top: var(--s1); color: var(--mut); font-size: var(--fs-md); }
+.view-toolbar {
+  display: flex; align-items: center; gap: var(--s3);
+  flex-wrap: wrap; margin-bottom: var(--s4);
+}
+/* Zwischenueberschriften der Ansicht liegen auf dem Leder, nicht auf einem
+   Pergamentblatt - deshalb die hellen Rahmenfarben. Ueberschriften
+   innerhalb einer Karte (.card-head h3) sind davon nicht betroffen. */
+.view > h3 { color: var(--onDark); }
+
+.view-footnote {
+  margin-top: var(--s5); padding-top: var(--s4);
+  border-top: 1px solid var(--line2);
+  font-size: var(--fs-sm); color: var(--onDarkMut); line-height: 1.7;
+}
+
+/* --- Raster -------------------------------------------------------------
+   Rasterfelder haben von Haus aus min-width:auto und schrumpfen deshalb
+   nicht unter ihren Inhalt. Eine breite Tabelle schob so die ganze Seite
+   waagerecht auf, statt in ihrem eigenen Kasten zu scrollen. */
+.grid > *, .split > * { min-width: 0; }
+.grid { display: grid; gap: var(--s4); }
+.grid.cols-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.grid.cols-3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.grid.cols-4 { grid-template-columns: repeat(auto-fit, minmax(166px, 1fr)); }
+.split { display: grid; gap: var(--s5); grid-template-columns: minmax(280px, 336px) 1fr; align-items: start; }
+
+/* --- Mobil -------------------------------------------------------------- */
+@media (max-width: 1000px) {
+  .split { grid-template-columns: 1fr; }
+}
+@media (max-width: 860px) {
+  .app { grid-template-columns: 1fr; }
+  .app.collapsed { grid-template-columns: 1fr; }
+  .sidebar {
+    position: fixed; inset: 0 auto 0 0; width: var(--sidebar-w);
+    transform: translateX(-100%);
+    transition: transform var(--t-slow);
+    box-shadow: var(--sh-lg);
+  }
+  .app.nav-open .sidebar { transform: none; }
+  .app.collapsed .sb-title, .app.collapsed .sb-label,
+  .app.collapsed .sb-txt { display: revert; }
+  .app.collapsed .sb-link { justify-content: flex-start; padding-inline: var(--s4); }
+  .app.collapsed .sb-head { justify-content: flex-start; padding: 0 var(--s4); }
+  #burger { display: block; }
+  .sb-foot { display: none; }
+  .view { padding: var(--s4); }
+  .topbar { padding: 0 var(--s4); }
+  #navScrim {
+    position: fixed; inset: 0; background: rgba(0, 0, 0, .6);
+    z-index: 35; opacity: 0; pointer-events: none; transition: opacity var(--t-mid);
+  }
+  .app.nav-open #navScrim { opacity: 1; pointer-events: auto; }
+}
+@media (max-width: 560px) {
+  .view-head h2 { font-size: var(--fs-xl); }
+  .tb-crumb span { display: none; }
+}
+
+
+/* --- Fusszeile -----------------------------------------------------------
+   Liegt unter dem Inhalt, nicht klebend - sie soll niemandem im Weg sein.
+   Im Electron-Client oeffnen die Links im richtigen Browser, dafuer sorgt
+   der Fensterhandler in electron/main.js. */
+.appfoot {
+  display: flex; gap: var(--s4); flex-wrap: wrap; align-items: center;
+  margin: 0 var(--s5) var(--s5);
+  padding: var(--s3) var(--s4);
+  border-top: 1px solid var(--bronze);
+  font-size: var(--fs-sm);
+  /* Die Fusszeile liegt auf dem dunklen Ledergrund, nicht auf dem Pergament.
+     Mit der Tintenfarbe waere sie dunkel auf dunkel - gemessen 2,02:1 und
+     damit unlesbar. Deshalb hier die hellen Toene des Rahmens. */
+  color: #b09b80;
+}
+.appfoot a { color: var(--brass); font-weight: 600; }
+.appfoot a:hover { color: #fff0a6; }
+.appfoot-right { margin-left: auto; }
+@media (max-width: 700px) {
+  .appfoot { margin: 0 var(--s4) var(--s4); }
+  .appfoot-right { margin-left: 0; }
+}

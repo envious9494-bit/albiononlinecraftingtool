@@ -1,0 +1,235 @@
+/* ==========================================================================
+   Design-Tokens - "Marktplatz von Caerleon".
+
+   Vorbild ist die Oberflaeche von Albion Online: dunkles Leder mit
+   Bronzebeschlag als Rahmen, Pergament als Arbeitsflaeche, Gold als Akzent.
+   Kein weiteres dunkles Dashboard, wie es sie im Netz zu Dutzenden gibt.
+
+   Aufbau: :root traegt die HELLE Pergament-Welt (Inhalt, Karten, Tabellen).
+   Sidebar und Topbar ueberschreiben dieselben Variablennamen mit den
+   dunklen Lederwerten - dadurch faerben sich alle Bausteine darin von
+   selbst um, ohne dass eine einzige Komponente davon wissen muss.
+   ========================================================================== */
+:root {
+  /* --- Flaechen: Pergament -------------------------------------------- */
+  /* Aus offiziellen Screenshots gemessen: Albions Fenster sind warmes
+     Pergament mit breitem dunkelbraunem Rahmen - nicht Stein und nicht das
+     blasse Cremeweiss, das ich zuerst angenommen hatte. Genommen wird das
+     helle Ende der gemessenen Reihe, damit dichte Zahlenkolonnen lesbar
+     bleiben; die dunkleren Toene tragen Kopfzeilen und Einsenkungen. */
+  --bg:        #2a201a;   /* Grund, auf dem das Pergament liegt */
+  --bg2:       #e2c09a;   /* eingesenkte Flaechen, Eingabefelder (gemessen) */
+  --card:      #eac7a1;   /* Pergament, hell (gemessen) */
+  --card2:     #d5a87f;   /* Pergament, eine Stufe tiefer (gemessen) */
+  --raised:    #f2d8ba;   /* aufliegend: Menues, Tooltips */
+  --line:      #b28b6c;   /* feine Trennlinie (gemessen) */
+  --line2:     #9e745e;   /* betonte Kante (gemessen) */
+
+  /* --- Schrift auf Pergament ------------------------------------------ */
+  --txt:       #381900;   /* Tinte (gemessen) */
+  --txt2:      #533722;   /* Titelbraun (gemessen) */
+  --mut:       #6b4a2e;   /* dunkel genug fuer 4,5:1 auf Pergament */
+  --faint:     #8a6a4e;
+
+  /* --- Schrift auf dem Leder, nicht auf dem Pergament ------------------
+     Zwischenueberschriften und Fussnoten stehen unmittelbar auf dem
+     dunklen Grund. Mit der Tinte des Pergaments waren sie dort praktisch
+     unsichtbar (gemessen 1,01:1). Diese beiden Werte gehoeren zum Rahmen,
+     nicht zum Blatt. */
+  --onDark:    #f3e6cf;   /* 11,7:1 auf #2a201a */
+  --onDarkMut: #ddcbae;   /*  8,9:1 auf #2a201a */
+
+  /* --- Akzent: Bronze und Gold ---------------------------------------- */
+  --gold:      #6f4a12;   /* auf hellem Grund muss Gold dunkel sein */
+  --gold2:     #a07c33;
+  --goldDim:   rgba(160, 124, 51, .22);
+  --goldGlow:  rgba(160, 124, 51, .40);
+
+  /* --- Semantik (fuer Pergament abgedunkelt) -------------------------- */
+  --green:     #1f6b33;
+  --greenDim:  rgba(31, 107, 51, .14);
+  --red:       #9d2620;
+  --redDim:    rgba(157, 38, 32, .13);
+  --amber:     #8a5a10;
+  --amberDim:  rgba(138, 90, 16, .15);
+  --blue:      #2a5c8a;
+
+  /* --- Leder (Rahmen der Anwendung) ----------------------------------- */
+  /* Rahmen und Knoepfe, aus den Screenshots gemessen. Albions Knoepfe sind
+     dunkler Schiefer mit Goldschrift - nicht rot. Rot hat im Marktfenster
+     eine eigene Bedeutung ("du zahlst ueber Durchschnitt"), ein roter
+     Hauptknopf wuerde dem widersprechen. */
+  --leather:   #2b2b33;   /* Knopffuellung dunkel (gemessen) */
+  --leather2:  #42332c;   /* Fensterrahmen (gemessen) */
+  --leather3:  #4d3f3e;   /* aeussere Rahmenkante (gemessen) */
+  --bronze:    #685544;   /* eingelassene Leiste (gemessen) */
+  --bronze2:   #7a685c;   /* Rahmen-Lichtkante (gemessen) */
+  --brass:     #e8d66a;   /* Goldschrift auf Knoepfen (gemessen) */
+  --btn:       #2b2b33;   /* Knopf oben (gemessen) */
+  --btn-dark:  #1a1917;   /* Knopf unten (gemessen) */
+  --btn-bevel: #505460;   /* Knopfkante (gemessen) */
+
+  /* --- Tier-Farben ----------------------------------------------------- */
+  /* Aus der Dev-Antwort im offiziellen Forum, durch Messung an
+     render.albiononline.com bestaetigt. */
+  --t1: #484047; --t2: #635349; --t3: #3f5131; --t4: #355f78;
+  --t5: #77221a; --t6: #c9712c; --t7: #d1b044; --t8: #d0d0d0;
+
+  /* Verzauberungsstufen, offizielles Wiki (Template:Enchantment color) */
+  --e0: #484047; --e1: #6bff91; --e2: #49f1ff; --e3: #bd89ff; --e4: #ffb702;
+
+  /* --- Abstaende ------------------------------------------------------- */
+  --s1: 4px;  --s2: 8px;  --s3: 12px; --s4: 16px;
+  --s5: 22px; --s6: 30px; --s7: 44px;
+
+  /* --- Radien ----------------------------------------------------------
+     Korrektur: Albions Fenster sind deutlich gerundet (rund 16-20 px bei
+     420 px Fensterbreite), nicht eckig. Fuer ein Werkzeug mit vielen
+     Tabellen etwas zurueckgenommen, aber klar rund. */
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-pill: 999px;
+
+  /* --- Typografie ------------------------------------------------------
+     Cinzel kommt den kapitalen Inschriften im Spiel am naechsten,
+     Alegreya Sans dem Fliesstext. Beide haben handfeste Ersatzketten -
+     ohne Netz sieht es schlichter aus, aber nichts bricht. */
+  /* Lora und Open Sans setzt Sandbox Interactive auf albiononline.com
+     selbst ein - naeher an "offiziell" kommt man bei frei verfuegbaren
+     Schriften nicht. Die Schrift der Spieloberflaeche ist nirgends
+     dokumentiert; vier Forumsthreads dazu bleiben ohne Antwort. */
+  --font-display: "Lora", "Palatino Linotype", Georgia, serif;
+  --font: "Open Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: "Cascadia Mono", "SF Mono", Consolas, monospace;
+  --fs-xs: 11.5px; --fs-sm: 13px;  --fs-md: 14.5px;
+  --fs-lg: 17px;   --fs-xl: 22px;  --fs-2xl: 29px;
+
+  /* --- Schatten und Beschlag ------------------------------------------ */
+  --sh-sm: 0 1px 2px rgba(40, 26, 8, .22);
+  --sh-md: 0 3px 10px rgba(25, 16, 4, .30);
+  --sh-lg: 0 14px 40px rgba(25, 16, 4, .55);
+  /* Innenkante: oben heller Lichtsaum, unten Schatten - laesst Flaechen
+     wie gepraegtes Material wirken statt wie flache Rechtecke. */
+  --emboss: inset 0 1px 0 rgba(255, 250, 230, .55), inset 0 -1px 0 rgba(90, 66, 24, .18);
+  --emboss-dark: inset 0 1px 0 rgba(216, 180, 90, .16), inset 0 -1px 0 rgba(0, 0, 0, .45);
+
+  /* --- Bewegung -------------------------------------------------------- */
+  --t-fast: .12s ease;
+  --t-mid:  .18s ease;
+  --t-slow: .28s cubic-bezier(.4, 0, .2, 1);
+
+  /* --- Layout ---------------------------------------------------------- */
+  --sidebar-w: 236px;
+  --sidebar-w-collapsed: 60px;
+  --topbar-h: 58px;
+}
+
+/* --------------------------------------------------------------------------
+   Der Rahmen der Anwendung ist Leder, nicht Pergament. Hier werden dieselben
+   Variablennamen umdefiniert, damit Knoepfe, Chips und Felder darin
+   automatisch dunkel werden - ohne eigene Regeln je Baustein.
+   -------------------------------------------------------------------------- */
+.sidebar, .topbar {
+  /* Ohne diese Zeile erbte der Rahmen die Tintenfarbe des Pergaments und
+     die Beschriftung waere dunkel auf dunkel. */
+  color: var(--txt);
+  --bg2:     #241c18;
+  --card:    var(--leather2);
+  --card2:   var(--leather3);
+  --raised:  #55453e;
+  --line:    #56463f;
+  --line2:   #7a685c;
+  --txt:     #f3e6cf;
+  --txt2:    #ddcbae;
+  --mut:     #b09b80;
+  --faint:   #8a7767;
+  --gold:    var(--brass);
+  --gold2:   var(--bronze2);
+  --goldDim: rgba(216, 180, 90, .16);
+}
+
+/* Wer Bewegung reduziert haben will, bekommt sie nicht. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    transition-duration: .001ms !important;
+  }
+}
+
+
+/* ==========================================================================
+   Dunkle Fassung - dieselbe Lederwelt, nur ohne das helle Pergament.
+   Alle Bausteine ziehen ihre Farben aus denselben Variablen, deshalb genuegt
+   das Umdefinieren hier oben.
+   ========================================================================== */
+html[data-theme="dark"] {
+  --bg:      #14100e;
+  --bg2:     #1f1b19;
+  --card:    #2c2521;
+  --card2:   #352c27;
+  --raised:  #40352e;
+  --line:    #453833;
+  --line2:   #5c4a41;
+
+  --txt:     #f2e7cd;
+  --txt2:    #dccca8;
+  --mut:     #a4906c;
+  --faint:   #7d6c50;
+
+  --gold:    #d8b45a;
+  --gold2:   #a8863c;
+  --goldDim: rgba(216, 180, 90, .16);
+
+  --green:   #4fbf74;
+  --greenDim: rgba(79, 191, 116, .14);
+  --red:     #e2685f;
+  --redDim:  rgba(226, 104, 95, .14);
+  --amber:   #e0a83c;
+  --amberDim: rgba(224, 168, 60, .14);
+  --blue:    #6aa9e0;
+
+  --emboss:  var(--emboss-dark);
+
+  /* In der dunklen Fassung ist der Grund ohnehin dunkel - dort gelten
+     dieselben hellen Werte wie im uebrigen Text. */
+  --onDark:    var(--txt);
+  --onDarkMut: var(--txt2);
+}
+
+/* ==========================================================================
+   Farbmodus fuer Rot-Gruen-Schwaeche.
+
+   Gewinn und Verlust duerfen sich nicht durch Rot gegen Gruen unterscheiden -
+   genau diese beiden Toene sind bei einer Rot-Gruen-Schwaeche kaum zu
+   trennen. Verwendet wird stattdessen die Palette von Okabe und Ito, die
+   ausdruecklich fuer Farbfehlsichtigkeit entworfen wurde: Blau gegen
+   Zinnoberrot, dazu Violett fuer Warnungen. Zusaetzlich bekommen Gewinn und
+   Verlust ein Dreieck vorangestellt, damit die Unterscheidung auch voellig
+   ohne Farbe funktioniert.
+   ========================================================================== */
+html[data-colors="cb"] {
+  --green:    #005b8f;   /* Blau = positiv */
+  --greenDim: rgba(0, 114, 178, .14);
+  --red:      #b34e00;   /* Zinnober = negativ */
+  --redDim:   rgba(213, 94, 0, .14);
+  --amber:    #6d2a83;   /* Violett = Warnung */
+  --amberDim: rgba(123, 50, 148, .14);
+}
+/* Auch die Tier-Marken tragen sonst Gruen (T2) gegen Rot (T4) - dieselbe
+   Falle. Im Kontrastmodus weichen sie auf Toene aus, die sich in Farbe und
+   Helligkeit unterscheiden. Die Beschriftung "T4" steht ohnehin darin, die
+   Farbe ist nur die schnelle Orientierung. */
+html[data-colors="cb"] {
+  --t1: #8a8378; --t2: #56b4e9; --t3: #0072b2; --t4: #cc79a7;
+  --t5: #e69f00; --t6: #8a6a2e; --t7: #6a4a9e; --t8: #3a3a3a;
+}
+
+html[data-theme="dark"][data-colors="cb"] {
+  --green:    #56b4e9;
+  --greenDim: rgba(86, 180, 233, .16);
+  --red:      #e69f00;
+  --redDim:   rgba(230, 159, 0, .16);
+  --amber:    #cc79a7;
+  --amberDim: rgba(204, 121, 167, .16);
+}

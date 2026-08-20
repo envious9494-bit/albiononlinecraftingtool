@@ -1,0 +1,383 @@
+/* ==========================================================================
+   Bausteine im Albion-Stil: Pergamenttafeln mit Bronzebeschlag.
+
+   Alle Klassennamen sind unveraendert geblieben - keine einzige Ansicht
+   musste angefasst werden, nur das Aussehen ist neu.
+   ========================================================================== */
+
+/* --- Tafeln ------------------------------------------------------------- */
+.card {
+  position: relative;
+  background:
+    /* feine Faserung, damit das Pergament nicht wie Papier aus dem Drucker wirkt */
+    repeating-linear-gradient(94deg, rgba(150, 120, 60, .045) 0 1px, transparent 1px 5px),
+    linear-gradient(180deg, var(--raised) 0%, var(--card) 12%, var(--card) 88%, var(--card2) 100%);
+  border: 1px solid var(--line2);
+  border-radius: var(--r-lg);
+  /* Bronzebeschlag: ein dunkler Absatz und ein Bronzering ausserhalb der
+     Kante. Bewusst als Schatten und nicht als Pseudo-Element - ein Element
+     mit negativem inset zaehlt zum scrollbaren Bereich und schob die ganze
+     Seite waagerecht auf. Schatten tun das nicht. */
+  box-shadow:
+    var(--emboss),
+    0 0 0 3px rgba(20, 13, 4, .55),
+    0 0 0 4px rgba(107, 81, 36, .75),
+    var(--sh-md);
+}
+.card + .card { margin-top: var(--s5); }
+
+.card-head {
+  display: flex; align-items: center; gap: var(--s3);
+  padding: var(--s3) var(--s5);
+  background: linear-gradient(180deg, rgba(107, 81, 36, .16), rgba(107, 81, 36, .05));
+  border-bottom: 1px solid var(--line2);
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+  box-shadow: inset 0 -2px 0 rgba(255, 250, 230, .4);
+}
+.card-head h3 { font-size: var(--fs-md); color: var(--gold); }
+.card-head p { font-size: var(--fs-sm); color: var(--mut); }
+.card-head .right { margin-left: auto; display: flex; gap: var(--s2); align-items: center; }
+.card-body { padding: var(--s5); }
+.card-body.tight { padding: var(--s4); }
+.card.flat { box-shadow: var(--emboss); background: var(--card2); }
+
+/* Feldgruppe innerhalb einer Tafel */
+.fieldset { padding: var(--s4) var(--s5); border-top: 1px solid var(--line); }
+.fieldset:first-child { border-top: none; }
+.fieldset > h4 {
+  margin-bottom: var(--s3);
+  font-family: var(--font-display);
+  font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 1.6px; color: var(--gold);
+}
+.field { display: flex; align-items: center; gap: var(--s2); margin: 9px 0; font-size: var(--fs-md); flex-wrap: wrap; }
+.field > label, .field > .lbl { color: var(--mut); flex: none; }
+.field > .lbl.w { width: 96px; }
+.field > select, .field > input:not([type=checkbox]) { flex: 1; min-width: 110px; }
+.field.check { cursor: pointer; user-select: none; }
+.field.stack { flex-direction: column; align-items: stretch; gap: var(--s1); }
+.field.stack > label { font-size: var(--fs-sm); }
+.hint { font-size: var(--fs-sm); color: var(--mut); margin-top: var(--s1); line-height: 1.55; }
+
+/* --- Knoepfe -------------------------------------------------------------
+   Albions Knoepfe sind dunkle Schieferpillen mit Goldschrift - gemessen aus
+   den offiziellen Screenshots (Fuellung #2b2b33 nach #1a1917, Kante
+   #505460, Schrift #e8d66a). Ein roter Hauptknopf waere hier falsch: Rot
+   bedeutet im Marktfenster "du zahlst ueber Durchschnitt". */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--s2);
+  padding: 7px 16px; border-radius: var(--r-pill);
+  border: 1px solid var(--btn-bevel);
+  background: linear-gradient(180deg, var(--btn) 0%, var(--btn-dark) 100%);
+  color: var(--brass);
+  font-family: var(--font-display);
+  font-size: var(--fs-sm); font-weight: 600; letter-spacing: .3px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, .6);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .14), var(--sh-sm);
+  transition: filter var(--t-fast), border-color var(--t-fast);
+}
+.btn:hover { filter: brightness(1.35); border-color: var(--brass); }
+.btn:active { box-shadow: inset 0 2px 5px rgba(0, 0, 0, .5); }
+.btn:disabled { opacity: .45; cursor: not-allowed; filter: none; }
+/* Der Hauptknopf ist derselbe Knopf, nur mit hellerem Gold und Goldrand -
+   so, wie im Spiel die hervorgehobenen Aktionen aussehen. */
+.btn.primary {
+  border-color: var(--brass);
+  color: #fff0a6;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2), 0 0 0 1px rgba(232, 214, 106, .25), var(--sh-sm);
+}
+.btn.primary:hover { filter: brightness(1.4); }
+.btn.ghost { background: none; border-color: transparent; color: var(--mut);
+  box-shadow: none; text-shadow: none; }
+.btn.ghost:hover { background: var(--goldDim); color: var(--gold); }
+.btn.danger { background: linear-gradient(180deg, #7a2a24, #4a1512); border-color: #c8956a; color: #ffd9cc; }
+.btn.sm { padding: 4px 11px; font-size: var(--fs-xs); }
+.btn.block { width: 100%; }
+.btn .spin { display: inline-block; }
+.btn.loading .spin { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* --- Segment-Umschalter: eingelassene Reiter ----------------------------- */
+.seg {
+  display: inline-flex; flex-wrap: wrap; gap: 2px; padding: 2px;
+  background: var(--bg2); border: 1px solid var(--line2); border-radius: var(--r-sm);
+  box-shadow: inset 0 1px 3px rgba(90, 66, 24, .25);
+}
+.seg button {
+  padding: 4px 11px; border-radius: 2px; color: var(--mut);
+  font-family: var(--font-display); font-size: var(--fs-sm); font-weight: 600;
+  white-space: nowrap;
+  transition: background var(--t-fast), color var(--t-fast);
+}
+.seg button:hover { color: var(--txt); }
+.seg button.on {
+  background: linear-gradient(180deg, var(--btn), var(--btn-dark));
+  color: var(--brass); text-shadow: 0 1px 1px rgba(0, 0, 0, .6);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .16);
+}
+.seg button:disabled { opacity: .4; cursor: not-allowed; }
+
+/* --- Chips: kleine Wachssiegel ------------------------------------------ */
+.chips { display: flex; gap: var(--s2); flex-wrap: wrap; }
+.chip {
+  font-size: var(--fs-sm); padding: 4px 11px; border-radius: var(--r-sm);
+  border: 1px solid var(--line2);
+  background: linear-gradient(180deg, var(--raised), var(--card2));
+  color: var(--mut); box-shadow: var(--emboss);
+}
+.chip b { color: var(--txt); font-weight: 700; }
+.chip.ok   { border-color: rgba(31, 107, 51, .5);  color: var(--green); background: var(--greenDim); }
+.chip.warn { border-color: rgba(138, 90, 16, .5);  color: var(--amber); background: var(--amberDim); }
+.chip.bad  { border-color: rgba(157, 38, 32, .5);  color: var(--red);   background: var(--redDim); }
+button.chip { cursor: pointer; }
+button.chip:hover { border-color: var(--gold2); color: var(--gold); filter: brightness(1.05); }
+
+/* --- Kennzahlen ---------------------------------------------------------- */
+.stat {
+  padding: var(--s4);
+  background: linear-gradient(180deg, var(--raised), var(--card2));
+  border: 1px solid var(--line2); border-radius: var(--r-md);
+  box-shadow: var(--emboss);
+}
+.stat .k {
+  font-family: var(--font-display);
+  font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 1.4px; color: var(--mut);
+}
+.stat .v {
+  margin-top: var(--s2); font-size: 25px; font-weight: 700;
+  font-variant-numeric: tabular-nums; letter-spacing: -.3px; color: var(--txt);
+}
+.stat .v.pos { color: var(--green); } .stat .v.neg { color: var(--red); }
+.stat .s { margin-top: 2px; font-size: var(--fs-sm); color: var(--mut); }
+
+/* --- Tabellen: das Marktfenster ----------------------------------------- */
+.tablewrap {
+  position: relative; overflow-x: auto;
+  border: 1px solid var(--line2); border-radius: var(--r-lg);
+  background: var(--card);
+}
+table.data { width: 100%; border-collapse: collapse; }
+table.data thead th {
+  position: sticky; top: 0; z-index: 2;
+  background: linear-gradient(180deg, var(--leather3), var(--leather));
+  font-family: var(--font-display);
+  font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 1.1px;
+  color: var(--brass);
+  text-align: right; padding: 9px var(--s4);
+  border-bottom: 2px solid var(--bronze); white-space: nowrap;
+  box-shadow: inset 0 1px 0 rgba(216, 180, 90, .2);
+}
+table.data thead th:first-child { text-align: left; }
+table.data thead th[title] {
+  cursor: help; text-decoration: underline dotted rgba(216, 180, 90, .5); text-underline-offset: 3px;
+}
+table.data tbody td {
+  padding: 8px var(--s4); border-bottom: 1px solid var(--line);
+  text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums;
+}
+table.data tbody td:first-child { text-align: left; font-variant-numeric: normal; }
+/* Wechselnde Zeilen wie im Handelsfenster - hilft beim Verfolgen langer Reihen */
+table.data tbody tr:nth-child(even) { background: rgba(150, 120, 60, .07); }
+table.data tbody tr:last-child td { border-bottom: none; }
+table.data tbody tr.hover:hover { background: var(--goldDim); }
+table.data tfoot td {
+  padding: 10px var(--s4); text-align: right; font-weight: 700;
+  border-top: 2px solid var(--bronze); background: var(--card2);
+}
+table.data tfoot td:first-child { text-align: left; }
+.t-empty { padding: var(--s6); text-align: center; color: var(--mut); }
+
+/* Tier-Marke -------------------------------------------------------------- */
+.tier {
+  display: inline-block; min-width: 34px; text-align: center;
+  padding: 2px 7px; border-radius: 2px;
+  font-family: var(--font-display); font-weight: 700; font-size: 12.5px;
+  color: #fdf6e4; text-shadow: 0 1px 1px rgba(0, 0, 0, .5);
+  border: 1px solid rgba(0, 0, 0, .3);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .22);
+}
+.tier small { font-weight: 700; font-size: 10.5px; opacity: 1; }
+/* Verzauberung faerbt die Nachkommastelle - dieselben Toene wie im Spiel. */
+.tier small.e1 { color: var(--e1); } .tier small.e2 { color: var(--e2); }
+.tier small.e3 { color: var(--e3); } .tier small.e4 { color: var(--e4); }
+.tier.t1 { background: var(--t1); }
+.tier.t2 { background: var(--t2); } .tier.t3 { background: var(--t3); }
+.tier.t4 { background: var(--t4); } .tier.t5 { background: var(--t5); }
+.tier.t6 { background: var(--t6); } .tier.t7 { background: var(--t7); }
+.tier.t8 { background: var(--t8); }
+/* T7 (Gold) und T8 (Silber) sind hell - darauf braucht die Beschriftung
+   dunkle Tinte, sonst steht Weiss auf Weiss. */
+.tier.t7, .tier.t8 { color: #2b2018; text-shadow: 0 1px 0 rgba(255, 255, 255, .35); }
+.tier.t7 small, .tier.t8 small { color: inherit; }
+
+/* Item-Zeile mit Bild ----------------------------------------------------- */
+.itemcell { display: flex; align-items: center; gap: var(--s3); }
+.itemcell img {
+  width: 36px; height: 36px; flex: none;
+  border-radius: 3px;
+  background: radial-gradient(circle at 50% 40%, rgba(216, 180, 90, .22), transparent 70%);
+}
+.itemcell .nm { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.itemcell .nm b { font-weight: 700; font-size: 13.5px; }
+.itemcell .nm span { font-size: var(--fs-xs); color: var(--faint); }
+.iph {
+  display: inline-grid; place-items: center; width: 36px; height: 36px; flex: none;
+  border-radius: 3px; background: var(--bg2); border: 1px solid var(--line2);
+  font-size: var(--fs-xs); color: var(--mut);
+}
+
+/* --- Meldungen ---------------------------------------------------------- */
+.notice {
+  display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap;
+  padding: 10px var(--s4); border-radius: var(--r-md); font-size: var(--fs-md);
+  box-shadow: var(--emboss);
+}
+.notice.err  { border: 1px solid rgba(157, 38, 32, .55); background: var(--redDim);   color: #7d1d18; }
+.notice.warn { border: 1px solid rgba(138, 90, 16, .5);  background: var(--amberDim); color: #6d4708; }
+.notice.info { border: 1px solid var(--line2); background: var(--card2); color: var(--txt2); }
+
+/* --- Suchfeld mit Ergebnisliste ----------------------------------------- */
+.picker { position: relative; }
+.picker-list {
+  position: absolute; left: 0; right: 0; top: calc(100% + 4px); z-index: 20;
+  max-height: 320px; overflow-y: auto;
+  background: var(--raised); border: 1px solid var(--bronze);
+  border-radius: var(--r-md); box-shadow: var(--sh-lg);
+}
+.picker-list button {
+  display: flex; align-items: center; gap: var(--s3); width: 100%;
+  padding: 6px var(--s3); text-align: left;
+  border-bottom: 1px solid var(--line);
+  transition: background var(--t-fast);
+}
+.picker-list button:last-child { border-bottom: none; }
+.picker-list button:hover, .picker-list button.cursor { background: var(--goldDim); }
+.picker-list img { width: 28px; height: 28px; flex: none; }
+.picker-list .nm { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13.5px; }
+.picker-list .meta { margin-left: auto; font-size: var(--fs-xs); color: var(--mut); flex: none; }
+
+/* --- Ladebalken --------------------------------------------------------- */
+.bar {
+  height: 8px; border-radius: 2px; background: var(--bg2); overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(90, 66, 24, .3);
+}
+.bar > i {
+  display: block; height: 100%;
+  background: linear-gradient(180deg, var(--brass), var(--bronze));
+  transition: width var(--t-slow);
+}
+
+/* --- Aufklappbares ------------------------------------------------------ */
+details.box { border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--card2); }
+details.box > summary {
+  cursor: pointer; padding: var(--s3) var(--s4); font-weight: 700; color: var(--gold);
+  font-family: var(--font-display); font-size: var(--fs-md); user-select: none;
+}
+details.box > div { padding: 0 var(--s4) var(--s4); }
+details.box li { margin: 6px 0; color: var(--txt2); font-size: 13.5px; }
+
+/* --- Alterspunkt an Preisen --------------------------------------------- */
+.age { width: 9px; height: 9px; border-radius: 50%; flex: none; cursor: help; display: inline-block;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .25); }
+.age.fresh { background: #2f9e4a; }
+.age.mid   { background: #c98a1c; }
+.age.old   { background: #b3372f; }
+.age.none  { background: var(--line2); }
+
+/* --- Kurzmeldung -------------------------------------------------------- */
+#toast {
+  position: fixed; right: var(--s5); bottom: var(--s5); z-index: 200;
+  padding: 10px var(--s4); border-radius: var(--r-md);
+  background: linear-gradient(180deg, var(--leather3), var(--leather));
+  border: 1px solid var(--bronze); color: #f0e3c6;
+  box-shadow: var(--sh-lg); font-size: var(--fs-md);
+  opacity: 0; transform: translateY(8px); pointer-events: none;
+  transition: opacity var(--t-mid), transform var(--t-mid);
+}
+#toast.show { opacity: 1; transform: none; }
+#toast.ok   { border-color: #3f9e57; color: #b6efc6; }
+#toast.err  { border-color: #c0453c; color: #ffc9c2; }
+
+/* --- Preisfeld in Tabellen ---------------------------------------------- */
+.pinput {
+  width: 10ch; text-align: right; padding: 3px 8px;
+  font-variant-numeric: tabular-nums; background: var(--bg2);
+}
+.pinput.own { border-color: var(--gold2); color: var(--gold); font-weight: 700; }
+.pwrap { display: inline-flex; align-items: center; gap: 6px; justify-content: flex-end; }
+.pwrap .reset {
+  width: 20px; height: 20px; flex: none; border-radius: 3px; padding: 0; line-height: 1;
+  background: var(--goldDim); border: 1px solid var(--gold2); color: var(--gold); font-size: 12px;
+}
+.pwrap .reset:hover { filter: brightness(1.1); }
+
+/* --- Aufstellungszeile (Kosten/Erloes) ---------------------------------- */
+.dl { display: flex; justify-content: space-between; gap: var(--s4); margin: 5px 0; font-size: 13.5px; }
+.dl > span:first-child { color: var(--mut); }
+.dl > span:last-child { font-variant-numeric: tabular-nums; text-align: right; }
+.dl.total {
+  border-top: 1px solid var(--line2); padding-top: 8px; margin-top: 10px; font-weight: 700;
+}
+.dl.total > span:first-child { color: var(--txt); }
+
+/* --- Filterleiste -------------------------------------------------------
+   Das Wichtigste in der ersten Zeile, das Feine auf Abruf darunter. */
+.filterbar {
+  display: flex; align-items: center; gap: var(--s4); flex-wrap: wrap;
+  padding: var(--s3) var(--s4);
+  border-bottom: 1px solid var(--line);
+}
+.filterbar.sub {
+  background: rgba(107, 81, 36, .09);
+  box-shadow: inset 0 2px 5px rgba(90, 66, 24, .12);
+}
+.filterbar label.mut { display: flex; align-items: center; gap: var(--s2); }
+.filterbar .btn.ghost.on { color: var(--gold); background: var(--goldDim); }
+
+/* --- Zugeklappte Tafel --------------------------------------------------
+   Der Inhalt bleibt im DOM, damit die Rechnungen weiterlaufen. */
+.card.folded > *:not(.card-head) { display: none; }
+.card.folded > .card-head { border-bottom: none; border-radius: var(--r-lg); }
+.fold {
+  width: 26px; height: 26px; flex: none; border-radius: var(--r-sm); padding: 0; line-height: 1;
+  border: 1px solid var(--line2); background: linear-gradient(180deg, var(--raised), var(--card2));
+  color: var(--mut); box-shadow: var(--emboss);
+}
+.fold:hover { color: var(--gold); border-color: var(--gold2); }
+.fold > span { display: inline-block; transition: transform var(--t-fast); }
+.card.folded .fold > span { transform: rotate(-90deg); }
+
+
+/* --- Dichte --------------------------------------------------------------
+   "Kompakt" ist kein Schoenheitsschalter, sondern der Unterschied zwischen
+   "passt auf den Bildschirm" und "muss geschoben werden": die breiten
+   Tabellen schrumpfen damit um rund ein Viertel. */
+html[data-density="kompakt"] table.data thead th { padding: 6px 7px; font-size: 10px; letter-spacing: .3px; }
+html[data-density="kompakt"] table.data tbody td { padding: 4px 7px; font-size: 13px; }
+html[data-density="kompakt"] table.data tfoot td { padding: 6px 9px; }
+html[data-density="kompakt"] .itemcell img,
+html[data-density="kompakt"] .iph { width: 24px; height: 24px; }
+html[data-density="kompakt"] .itemcell { gap: var(--s2); }
+html[data-density="kompakt"] .itemcell .nm b { font-size: 12.5px; }
+html[data-density="kompakt"] .itemcell .nm span { display: none; }
+html[data-density="kompakt"] .card-body { padding: var(--s4); }
+html[data-density="kompakt"] .pinput { width: 8ch; }
+/* Die erste Spalte traegt den langen Namen und bestimmt damit fast allein,
+   wie breit die Tabelle wird. Sie darf hier umbrechen - das holt mehr
+   Platz herein als alle anderen Sparmassnahmen zusammen. */
+html[data-density="kompakt"] table.data tbody td:first-child {
+  white-space: normal; max-width: 144px;
+}
+html[data-density="kompakt"] .itemcell .nm b { line-height: 1.2; }
+
+/* --- Zusatzzeichen fuer Farbfehlsichtigkeit ------------------------------
+   Ein Dreieck vor der Zahl trennt Gewinn und Verlust auch dann, wenn die
+   Farben nicht unterscheidbar sind. */
+html[data-colors="cb"] td.pos::before,
+html[data-colors="cb"] .stat .v.pos::before { content: "\25b2\00a0"; font-size: .8em; }
+html[data-colors="cb"] td.neg::before,
+html[data-colors="cb"] .stat .v.neg::before { content: "\25bc\00a0"; font-size: .8em; }
+
+/* --- Einstellungsspalte ausblenden ---------------------------------------
+   Gibt den breiten Ergebnistabellen die volle Breite. */
+.split.no-side { grid-template-columns: 1fr; }
+.split.no-side > :first-child { display: none; }

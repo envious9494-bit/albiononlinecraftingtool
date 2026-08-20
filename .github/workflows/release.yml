@@ -1,0 +1,71 @@
+# Baut das Windows-Programm und haengt es an eine Release.
+#
+# Ausloesen: einen Tag schieben, der mit "v" beginnt.
+#     git tag v1.0.0
+#     git push origin v1.0.0
+#
+# Danach liegen unter "Releases" zwei Dateien:
+#     AlbionToolkit-Setup-1.0.0.exe   Installer
+#     AlbionToolkit-1.0.0.zip         portable Fassung
+#
+# Auf einen Zertifikatsschluessel wird bewusst verzichtet - eine
+# Code-Signatur kostet mehrere hundert Euro im Jahr. Die README erklaert
+# den Nutzern, wie sie die SmartScreen-Meldung wegklicken.
+
+name: Release bauen
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:        # laesst sich auch von Hand starten
+
+permissions:
+  contents: write           # noetig, um die Release anzulegen
+
+jobs:
+  windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Quelltext holen
+        uses: actions/checkout@v4
+
+      - name: Node einrichten
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Abhaengigkeiten installieren
+        run: npm ci
+
+      - name: Installer und ZIP bauen
+        run: npm run dist
+        env:
+          # Ohne Zertifikat nicht signieren - sonst bricht der Bau ab.
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+
+      - name: Ergebnis auflisten
+        run: Get-ChildItem dist -File | Select-Object Name, Length
+        shell: pwsh
+
+      # Auch ohne Tag greifbar: die Dateien haengen am Lauf selbst.
+      - name: Als Artefakt sichern
+        uses: actions/upload-artifact@v4
+        with:
+          name: AlbionToolkit-Windows
+          path: |
+            dist/*.exe
+            dist/*.zip
+          if-no-files-found: error
+
+      - name: Release veroeffentlichen
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: false
+          generate_release_notes: true
+          files: |
+            dist/*.exe
+            dist/*.zip
