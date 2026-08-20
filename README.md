@@ -140,6 +140,11 @@ USB-Stick.
    den dir die Station dort anzeigt.
 5. **Craft-Chancen öffnen** und suchen lassen.
 
+Die Übersicht zeigt jederzeit, wie alt deine Marktdaten sind und welche
+Rechner es gibt:
+
+![Übersicht](docs/bilder/01-uebersicht.png)
+
 ### Zwei Dinge, die man wissen sollte
 
 **Gerechnet wird immer mit Normal**, der schlechtesten Qualität. Beim
@@ -177,10 +182,16 @@ Materialien mit Item-Werten.
 
 ## Häufige Fragen
 
-**Ist das erlaubt?**
-Ja. Das Toolkit greift nicht ins Spiel ein und liest nichts aus dem Spiel aus.
-Es rechnet mit öffentlich verfügbaren Daten. Der Data-Project-Client ist von
-Sandbox Interactive ausdrücklich geduldet.
+**Greift das ins Spiel ein?**
+Nein. Dieses Toolkit hat mit dem Spiel überhaupt keine Verbindung: es liest
+nichts aus, verändert nichts und läuft völlig getrennt davon. Es rechnet mit
+Rezepten aus den öffentlichen Spieldaten und mit Preisen, die andere Spieler
+gesammelt haben.
+
+Der **Data-Project-Client**, mit dem diese Preise gesammelt werden, ist ein
+eigenes Programm und nicht Teil dieses Projekts. Ob du ihn einsetzen möchtest,
+entscheidest du selbst – die Bedingungen dazu stehen auf
+[albion-online-data.com](https://www.albion-online-data.com/).
 
 **Werden meine Daten irgendwohin geschickt?**
 Nein. Alles liegt in deinem Browser (bzw. im Programm). Es gibt keinen Server,
