@@ -90,8 +90,9 @@ Three ways. **Way 2 needs no installation at all.**
 
 ### Way 1: Windows program (recommended)
 
-1. On the [**Releases**](https://github.com/envious9494-bit/albiononlinecraftingtool/releases/latest)
-   page, download `AlbionToolkit-Setup-1.0.0.exe`.
+1. Download **[AlbionToolkit-Setup.exe](https://github.com/envious9494-bit/albiononlinecraftingtool/releases/latest/download/AlbionToolkit-Setup.exe)**
+   – that link always points at the newest version. All versions are on the
+   [Releases](https://github.com/envious9494-bit/albiononlinecraftingtool/releases/latest) page.
 2. Double-click it.
 3. **Windows will show a blue box:** "Windows protected your PC". This is
    expected – the file is not code-signed, because a signature costs several
@@ -120,10 +121,9 @@ prices are fetched straight from the Albion Online Data Project.
 
 ### Way 3: Portable version
 
-The [Releases](https://github.com/envious9494-bit/albiononlinecraftingtool/releases/latest)
-page also carries `AlbionToolkit-1.0.0.zip`. Unpack it, run
-`Albion Toolkit.exe` – nothing is installed, everything stays in the folder.
-Handy for a USB stick.
+Download **[AlbionToolkit.zip](https://github.com/envious9494-bit/albiononlinecraftingtool/releases/latest/download/AlbionToolkit.zip)**,
+unpack it, run `Albion Toolkit.exe` – nothing is installed, everything stays in
+the folder. Handy for a USB stick.
 
 ---
 

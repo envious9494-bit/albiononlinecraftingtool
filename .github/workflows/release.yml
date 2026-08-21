@@ -5,8 +5,14 @@
 #     git push origin v1.0.0
 #
 # Danach liegen unter "Releases" zwei Dateien:
-#     AlbionToolkit-Setup-1.0.0.exe   Installer
-#     AlbionToolkit-1.0.0.zip         portable Fassung
+#     AlbionToolkit-Setup-1.0.1.exe   Installer
+#     AlbionToolkit-1.0.1.zip         portable Fassung
+#     AlbionToolkit-Setup.exe         dieselbe Datei ohne Versionsnummer
+#     AlbionToolkit.zip               dieselbe Datei ohne Versionsnummer
+#
+# Die beiden Kopien ohne Nummer gibt es, damit die README dauerhaft
+# verlinken kann: /releases/latest/download/AlbionToolkit-Setup.exe zeigt
+# immer auf die neueste Fassung.
 #
 # Auf einen Zertifikatsschluessel wird bewusst verzichtet - eine
 # Code-Signatur kostet mehrere hundert Euro im Jahr. Die README erklaert
@@ -48,6 +54,20 @@ jobs:
         env:
           # Ohne Zertifikat nicht signieren - sonst bricht der Bau ab.
           CSC_IDENTITY_AUTO_DISCOVERY: false
+
+      - name: Kopie ohne Versionsnummer
+        # Ein Download-Link, der jede Version ueberlebt.
+        run: |
+          # Der Uninstaller heisst aehnlich und sortiert sich sogar davor -
+          # deshalb ausdruecklich ausschliessen.
+          $exe = Get-ChildItem dist -Filter 'AlbionToolkit-Setup-*.exe' |
+                 Where-Object { $_.Name -notlike '*__uninstaller*' } | Select-Object -First 1
+          $zip = Get-ChildItem dist -Filter 'AlbionToolkit-*.zip'       | Select-Object -First 1
+          if (-not $exe) { throw 'Installer nicht gefunden' }
+          if (-not $zip) { throw 'ZIP nicht gefunden' }
+          Copy-Item $exe.FullName 'dist/AlbionToolkit-Setup.exe'
+          Copy-Item $zip.FullName 'dist/AlbionToolkit.zip'
+        shell: pwsh
 
       - name: Ergebnis auflisten
         run: Get-ChildItem dist -File | Select-Object Name, Length
