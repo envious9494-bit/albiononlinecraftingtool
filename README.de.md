@@ -53,6 +53,11 @@ Fokus, Ressourcenwert, Fame – sechzehn Ansichten, alle mit denselben
 Einstellungen für Stadt, Gebühr, Steuer und Premium. Gerichte und Tränke
 lassen sich dabei auch verzaubert rechnen (.1 bis .3).
 
+Der **Refining-Rechner** zeigt zu jeder Familie – etwa Leder – alle Stufen
+nebeneinander, samt günstigstem Einkaufs- und bestem Verkaufsort. Und weil
+Refining auf Masse geht, lässt sich dort auch **an die Gilde verkaufen**:
+Marktwert abzüglich Rabatt, ohne Steuer und ohne Ordergebühr.
+
 ![Crafting-Rechner](docs/bilder/04-crafting-rechner.png)
 
 ### Koch-Rechner samt Gewinnübersicht

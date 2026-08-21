@@ -9,11 +9,18 @@
 
   AO.fmt = {
     /* Silberbetrag, gerundet */
-    s: function (x) { return isFinite(x) ? nf0.format(Math.round(x)) : '—'; },
+    /* Achtung: isFinite(null) ist in JavaScript true, weil null zu 0 wird.
+       Ein fehlender Preis erschien dadurch als "0" - und eine Zeile ohne
+       Verkaufspreis sah aus wie ein Totalverlust. Deshalb hier ausdruecklich
+       auf null und undefined pruefen. */
+    s: function (x) {
+      if (x === null || x === undefined || !isFinite(x)) return '—';
+      return nf0.format(Math.round(x));
+    },
 
     /* Silberbetrag mit Vorzeichen */
     sg: function (x) {
-      if (!isFinite(x)) return '—';
+      if (x === null || x === undefined || !isFinite(x)) return '—';
       return (x < 0 ? '−' : '+') + nf0.format(Math.round(Math.abs(x)));
     },
 

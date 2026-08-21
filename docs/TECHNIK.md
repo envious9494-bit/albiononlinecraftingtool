@@ -338,6 +338,66 @@ Tabellenüberlauf in allen 16 Ansichten.**
   hinter „Mehr Filter". In den Craft-Chancen und der Aufwertung standen
   vorher bis zu zehn Bedienelemente nebeneinander.
 
+## Refining: Gildenverkauf und alle Sorten auf einmal
+
+Refining geht auf Masse. Zwei Dinge fehlten dafür.
+
+### An die Gilde verkaufen
+
+Ein Haken in der Marktspalte stellt den Rechner auf den direkten Handel mit
+Gildenmitgliedern um: der Preis ist dann der **Marktwert abzüglich Rabatt**
+(Vorgabe 15 %), und es fallen **weder Verkaufssteuer noch Ordergebühr** an –
+ein Handel von Hand zu Hand kennt beides nicht.
+
+Nachgerechnet an 100 × T5-Leder: über den Markt 4 % Steuer und 2,5 %
+Ordergebühr, über die Gilde beides null. Mit Premium bleiben am Markt
+**93,5 %** des Preises übrig – **ab 6,5 % Rabatt verschenkt man also, statt zu
+sparen**. Genau das steht als Hinweis unter dem Schalter, und er rechnet sich
+mit: wer Premium abschaltet, sieht dort 10,5 %.
+
+Der Marktwert stammt aus tatsächlichen Abschlüssen über alle Städte, nicht aus
+einem Angebot. Er braucht deshalb Handelsdaten – im Gildenmodus lädt
+„Marktpreise laden" sie für die Erzeugnisse dieser Ansicht gleich mit. Fehlen
+sie, bleibt der Preis leer, statt geraten zu werden.
+
+Der Gildenverkauf sitzt im gemeinsamen Rechenkern (`AO.craft.calc` nimmt einen
+`guildPrice` entgegen) und ließe sich damit in jedem Rechner freischalten;
+eingeschaltet ist er vorerst nur im Refining, weil dort danach gefragt war.
+
+### Alle Sorten einer Familie, mit Ort
+
+Die Tafel **„Alle Stufen im Vergleich"** war zugeklappt und zeigte nur Kosten,
+Verkauf, Gewinn und Marge. Sie ist jetzt offen und nennt je Stufe zusätzlich:
+
+* **günstigster Einkauf** – die Stadt, in der das Material dieser Stufe
+  insgesamt am wenigsten kostet. Fehlt dort auch nur ein Materialpreis, fällt
+  die Stadt weg; eine Teilrechnung wäre irreführend.
+* **bester Verkauf** – der Ort mit dem höchsten Erlös **nach** Steuer und
+  Ordergebühr. Im Gildenmodus steht dort „an die Gilde".
+
+Die Zahlen dazu stehen im Tooltip, nicht in der Spalte. Grund: sie hätten eine
+andere Bezugsgröße als die Nachbarspalten – Material je Craft *vor* Rückgabe
+gegen Kosten je Stück *danach*. Nebeneinander gestellt liest sich das falsch.
+
+Ein Beispiel aus dem Testlauf (Leder, Einkauf und Verkauf auf Caerleon
+gestellt):
+
+| Stufe | günstigster Einkauf | bester Verkauf | Kosten / Stück | Verkauf / Stück |
+|---|---|---|---|---|
+| T5 Gegerbtes Leder | Fort Sterling | Caerleon | 1.723 | 1.595 |
+| T8 Gefestigtes Leder | Lymhurst | Brecilien | 18.313 | kein Verkaufspreis in Caerleon |
+
+### Ein Fehler, der dabei ans Licht kam
+
+Die T8-Zeile zeigte vorher **0** als Verkaufspreis und damit −100 % Marge –
+obwohl es dort schlicht kein Angebot gab. Ursache ist eine Eigenheit von
+JavaScript: `isFinite(null)` ist **true**, weil `null` zu `0` wird. Der
+Formatierer hielt den fehlenden Preis deshalb für eine gültige Null.
+
+`F.s()` und `F.sg()` prüfen jetzt ausdrücklich auf `null` und `undefined`. Die
+Zeile sagt seitdem „kein Verkaufspreis in Caerleon", statt einen Totalverlust
+zu behaupten.
+
 ## Gewinnübersicht in den Einzelrechnern
 
 Unter jedem Einzelrechner steht jetzt **„Was lohnt sich gerade?"** – eine

@@ -671,5 +671,20 @@ AO.data.sprachen = {
   "· nur {name}": { en: "· only {name}", es: "· solo {name}" },
   "an die Gilde": { en: "to the guild", es: "al gremio" },
   "zu −{n}% vom Marktwert": { en: "at −{n}% of market value", es: "a −{n}% del valor de mercado" },
-  "(geprüft werden die Wege, die schon zum vollen Marktpreis tragen – mehr kann ein Gildenpreis nicht bringen)": { en: "(the paths checked are those that already carry at the full market price – a guild price cannot do better)", es: "(se comprueban las rutas que ya salen a cuenta al precio de mercado completo: un precio de gremio no puede dar más)" }
+  "(geprüft werden die Wege, die schon zum vollen Marktpreis tragen – mehr kann ein Gildenpreis nicht bringen)": { en: "(the paths checked are those that already carry at the full market price – a guild price cannot do better)", es: "(se comprueban las rutas que ya salen a cuenta al precio de mercado completo: un precio de gremio no puede dar más)" },
+  "An Gilde verkaufen": { en: "Sell to the guild", es: "Vender al gremio" },
+  "(direkt)": { en: "(direct)", es: "(directo)" },
+  "% vom Marktwert": { en: "% off the market value", es: "% del valor de mercado" },
+  "günstigster Einkauf": { en: "cheapest purchase", es: "compra más barata" },
+  "bester Verkauf": { en: "best sale", es: "mejor venta" },
+  "kein Preis": { en: "no price", es: "sin precio" },
+  "Stadt, in der das Material dieser Stufe insgesamt am günstigsten ist. Eingekauft wird nach der Einstellung links.": { en: "The city where the material for this tier costs the least in total. Buying follows the setting on the left.", es: "La ciudad donde el material de este nivel cuesta menos en total. La compra sigue el ajuste de la izquierda." },
+  "Ort mit dem höchsten Erlös nach Steuer und Ordergebühr.": { en: "The location with the highest proceeds after tax and order fee.", es: "El lugar con los mayores ingresos tras impuestos y tarifa de orden." },
+  "Marktwert über alle Städte abzüglich Rabatt": { en: "Market value across all cities minus the discount", es: "Valor de mercado en todas las ciudades menos el descuento" },
+  "alle Stufen von {name} · gleiche Einstellungen": { en: "all tiers of {name} · same settings", es: "todos los niveles de {name} · mismos ajustes" },
+  "Material je Craft in {name}: {n}– noch ohne Rückgabe": { en: "Material per craft in {name}: {n}– before the return rate", es: "Material por fabricación en {name}: {n}– antes de la tasa de retorno" },
+  "Angebot dort {n}, nach Steuer und Gebühr {n}": { en: "Offer there {n}, after tax and fee {n}", es: "Oferta allí {n}, tras impuestos y tarifa {n}" },
+  "kein Verkaufspreis in {name}": { en: "no sale price in {name}", es: "sin precio de venta en {name}" },
+  "kein Verkaufspreis": { en: "no sale price", es: "sin precio de venta" },
+  "Direkter Handel: keine Verkaufssteuer, keine Ordergebühr. Über den Markt blieben {n}% übrig – ab einem Rabatt von {n}% ist die Gilde also teurer als der Markt. Der Marktwert kommt aus den Handelsdaten; ohne sie bleibt der Preis leer.": { en: "Direct trade: no sales tax, no order fee. The market would leave {n}% – so from a discount of {n}% onwards the guild is more expensive than the market. The market value comes from the trade data; without it the price stays empty.", es: "Comercio directo: sin impuesto de venta ni tarifa de orden. Por el mercado quedaría el {n}%, así que a partir de un descuento del {n}% el gremio sale más caro que el mercado. El valor de mercado viene de los datos de comercio; sin ellos el precio queda vacío." }
 };

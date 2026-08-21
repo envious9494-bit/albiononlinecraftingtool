@@ -11,15 +11,42 @@
 (function () {
   "use strict";
 
-  /* Kategorie-Bezeichnungen für die fünf Rohstoffarten ergänzen */
-  var CAT = { WOOD: 'Holz', ORE: 'Erz', FIBER: 'Fasern', HIDE: 'Felle', ROCK: 'Stein' };
-  Object.keys(CAT).forEach(function (k) { AO.data.categories.catDe[k] = CAT[k]; });
+  /* Kategorie- und Sammelnamen der fünf Rohstoffarten. Das ist unsere
+     eigene Ordnung, nicht die des Spiels - deshalb stehen sie hier
+     dreisprachig, genau wie die übrigen Kategorien in data/categories.js.
+     (Die Item-Namen selbst kommen weiterhin aus der Lokalisierung.) */
+  var CAT = {
+    WOOD:  { de: 'Holz',   en: 'Wood',   es: 'Madera' },
+    ORE:   { de: 'Erz',    en: 'Ore',    es: 'Mineral' },
+    FIBER: { de: 'Fasern', en: 'Fibre',  es: 'Fibra' },
+    HIDE:  { de: 'Felle',  en: 'Hide',   es: 'Piel' },
+    ROCK:  { de: 'Stein',  en: 'Stone',  es: 'Piedra' }
+  };
 
   /* Sammelnamen der Familien (statt des T4-Namens „Stahlbarren") */
   var FAMILY = {
-    PLANKS: 'Bretter', METALBAR: 'Metallbarren', CLOTH: 'Stoff',
-    LEATHER: 'Leder', STONEBLOCK: 'Steinblöcke'
+    PLANKS:     { de: 'Bretter',      en: 'Planks',     es: 'Tablones' },
+    METALBAR:   { de: 'Metallbarren', en: 'Metal bars', es: 'Lingotes' },
+    CLOTH:      { de: 'Stoff',        en: 'Cloth',      es: 'Tela' },
+    LEATHER:    { de: 'Leder',        en: 'Leather',    es: 'Cuero' },
+    STONEBLOCK: { de: 'Steinblöcke',  en: 'Stone blocks', es: 'Bloques de piedra' }
   };
+
+  function inSprache(tabelle, key) {
+    var e = tabelle[key];
+    if (!e) return null;
+    return e[AO.i18n.lang()] || e.de;
+  }
+
+  /* Die Ansichten lesen catDe; i18n tauscht das Feld beim Umschalten aus.
+     Deshalb in alle drei Tabellen schreiben und catDe passend belegen. */
+  Object.keys(CAT).forEach(function (k) {
+    var c = AO.data.categories;
+    c.catDe[k] = inSprache(CAT, k);
+    if (c.catEn) c.catEn[k] = CAT[k].en;
+    if (c.catEs) c.catEs[k] = CAT[k].es;
+    if (c._catDe) c._catDe[k] = CAT[k].de;
+  });
 
   /* Schneller Zugriff auf ein Refining-Rezept per Item-ID –
      nötig für „Vorstufe selbst herstellen". */
@@ -44,13 +71,16 @@
 
     ench: true,
     quality: false,
+    /* Refining geht auf Masse - da lohnt der direkte Verkauf an die
+       Gilde, weil dabei weder Steuer noch Ordergebuehr anfallen. */
+    guild: true,
     blackMarket: false,   /* der Schwarzmarkt handelt keine Ressourcen */
     selfCraft: true,
     overview: true,
 
     source: function () { return AO.data.refining; },
     byId: byId,
-    familyName: function (key) { return FAMILY[key]; },
+    familyName: function (key) { return inSprache(FAMILY, key); },
 
     /* Refining-Boni sind im Spiel eindeutig einer Stadt zugeordnet. */
     bonusCityOf: function (item) { return AO.data.refineBonus[kindOf(item.id)]; }

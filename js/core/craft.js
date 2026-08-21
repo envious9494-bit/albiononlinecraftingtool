@@ -141,7 +141,8 @@
        opt = {
          recipe, ench, amountCrafted, crafts, returnRate (0..1),
          buyCity, sellCity, quality, premium, buyMethod, sellMethod,
-         stationFee, focusPerCraft, useFocus, priceOf(id, city, q, side)
+         stationFee, focusPerCraft, useFocus, priceOf(id, city, q, side),
+         guildPrice (optional - dann steuer- und gebuehrenfrei)
        }
        -------------------------------------------------------------------- */
     calc: function (opt) {
@@ -187,11 +188,16 @@
 
       var costTotal = matTotal + feeTotal + orderBuy;
 
-      var sellPrice = price(opt.productId, opt.sellCity, opt.quality || 1,
-                            AO.craft.sellSideAt(opt.sellCity, opt.sellMethod));
+      /* Gildenverkauf: Hand zu Hand, also weder Verkaufssteuer noch
+         Ordergebuehr. Der Preis kommt von aussen herein (Marktwert
+         abzueglich Rabatt) statt vom Markt. */
+      var gilde = typeof opt.guildPrice === 'number' && isFinite(opt.guildPrice);
+      var sellPrice = gilde ? opt.guildPrice
+        : price(opt.productId, opt.sellCity, opt.quality || 1,
+                AO.craft.sellSideAt(opt.sellCity, opt.sellMethod));
       var gross = out * (sellPrice || 0);
-      var tax = gross * (opt.premium ? C.taxPremium : C.taxNormal);
-      var orderSell = gross * AO.craft.sellOrderFeeAt(opt.sellCity, opt.sellMethod);
+      var tax = gilde ? 0 : gross * (opt.premium ? C.taxPremium : C.taxNormal);
+      var orderSell = gilde ? 0 : gross * AO.craft.sellOrderFeeAt(opt.sellCity, opt.sellMethod);
       var net = gross - tax - orderSell;
       var profit = net - costTotal;
 
@@ -202,6 +208,7 @@
         matTotal: matTotal, feePerCraft: feePerCraft, feeTotal: feeTotal,
         orderBuy: orderBuy, costTotal: costTotal,
         sellPrice: sellPrice, gross: gross, tax: tax, orderSell: orderSell,
+        guild: gilde,
         net: net, profit: profit,
         perItem: out ? profit / out : NaN,
         margin: costTotal ? profit / costTotal * 100 : NaN,

@@ -44,6 +44,7 @@
       buyCity: 'Caerleon', sellCity: 'Caerleon',
       rrMode: 'none', rrManual: 15.2, focus: false, selfCraft: false,
       crafts: 100, fee: 800, search: '',
+      guild: false, guildPct: 15,
       profOnly: true, profSort: 'profit'
     });
 
@@ -117,6 +118,14 @@
               U.seg([{ v: 'order', n: 'Verkaufsorder +2,5 %' }, { v: 'instant', n: 'Sofortverkauf' }], AO.settings.sellMethod, '') +
             '</div>' +
             '<label class="field check"><input type="checkbox" data-x="premium"> Premium <span class="mut">(4 % statt 8 % Steuer)</span></label>' +
+            (cfg.guild
+              ? '<label class="field check" style="margin-top:var(--s2)">' +
+                  '<input type="checkbox" data-x="guild"> An Gilde verkaufen <span class="mut">(direkt)</span></label>' +
+                '<div class="field" data-x="guildBox" hidden><span class="lbl w">Rabatt</span>' +
+                  '<input class="num" data-x="guildPct" inputmode="decimal" style="max-width:100px">' +
+                  '<span class="mut">% vom Marktwert</span></div>' +
+                '<div class="hint" data-x="guildHint" hidden></div>'
+              : '') +
           '</div>' +
 
           '<div class="fieldset">' +
@@ -172,11 +181,15 @@
               '<div class="card-body" data-x="sellBox"></div></div>' +
           '</div>' +
           (cfg.overview
-            ? '<div class="card" data-fold="stufen" data-fold-default="zu" style="margin-top:var(--s4)">' +
+            ? '<div class="card" data-fold="stufen" style="margin-top:var(--s4)">' +
                 '<div class="card-head"><h3>Alle Stufen im Vergleich</h3>' +
-                  '<div class="right"><span class="mut">gleiche Einstellungen, T2 bis T8</span></div></div>' +
+                  '<div class="right"><span class="mut" data-x="ovNote"></span></div></div>' +
                 '<div class="tablewrap" style="border:none">' +
-                  '<table class="data"><thead><tr><th>Stufe</th><th>Kosten / Stück</th>' +
+                  '<table class="data"><thead><tr><th>Stufe</th>' +
+                  '<th title="Stadt, in der das Material dieser Stufe insgesamt am ' +
+                  'günstigsten ist. Eingekauft wird nach der Einstellung links.">günstigster Einkauf</th>' +
+                  '<th title="Ort mit dem höchsten Erlös nach Steuer und Ordergebühr.">bester Verkauf</th>' +
+                  '<th>Kosten / Stück</th>' +
                   '<th>Verkauf / Stück</th><th>Gewinn / Stück</th><th>Marge</th></tr></thead>' +
                   '<tbody data-x="ovRows"></tbody></table></div></div>'
             : '') +
@@ -450,6 +463,20 @@
         syncTierSeg(); syncEnchSeg(); syncChosen(); render();
         U.scrollIntoViewIfNeeded(root.querySelector('[data-x="matRows"]'));
       });
+      if (el.guild) {
+        el.guild.checked = S.guild;
+        el.guildPct.value = String(S.guildPct).replace('.', ',');
+        el.guild.addEventListener('change', function () {
+          S.guild = el.guild.checked; S.$save(); syncGuild(); render();
+        });
+        el.guildPct.addEventListener('input', U.debounce(function () {
+          var v = parseFloat(String(el.guildPct.value).replace(',', '.'));
+          S.guildPct = isFinite(v) ? Math.min(Math.max(v, 0), 100) : 0;
+          S.$save(); render();
+        }, 250));
+        syncGuild();
+      }
+
       el.clearOwn.addEventListener('click', function () {
         AO.market.clearOwn(); U.toast('Eigene Preise verworfen'); render();
       });
@@ -582,6 +609,20 @@
         var it = current(); if (!it) return;
         el.load.classList.add('loading'); el.load.disabled = true;
         AO.market.load(neededIds(), cfg.quality ? [1, 2, 3, 4, 5] : [1])
+          .then(function () {
+            /* Im Gildenmodus zaehlt der Marktwert, und der stammt aus
+               tatsaechlichen Abschluessen - also Handelsdaten nachladen.
+               Nur fuer die Erzeugnisse dieser Ansicht, das ist eine
+               einzige zusaetzliche Abfrage. */
+            if (!(cfg.guild && S.guild)) return null;
+            var pids = {};
+            profItems().forEach(function (x) {
+              var e = (cfg.ench && AO.craft.enchantable(x.it)) ? S.ench : 0;
+              pids[AO.craft.productId(x.it, e)] = 1;
+            });
+            return AO.market.loadHistory(Object.keys(pids),
+              [cfg.quality ? S.quality : 1], 21);
+          })
           .then(function () { U.toast('Marktpreise aktualisiert', 'ok'); })
           .catch(function (err) {
             U.toast('Laden fehlgeschlagen: ' + (err.name === 'AbortError' ? 'Zeitüberschreitung' : err.message), 'err');
@@ -802,6 +843,57 @@
         };
       }
 
+      /* Gildenpreis: Marktwert ueber alle Staedte abzueglich Rabatt. Der
+         Marktwert stammt aus tatsaechlichen Abschluessen, nicht aus einem
+         Angebot - deshalb braucht er die Handelsdaten. Fehlen die, gibt es
+         keinen Preis, und der Rechner sagt das, statt zu raten. */
+      function gildenPreis(prodId, q) {
+        if (!cfg.guild || !S.guild) return undefined;
+        var mw = AO.market.emv(prodId, q);
+        var wert = mw && typeof mw === 'object' ? mw.value : mw;
+        if (!wert) return NaN;                 /* NaN heisst: kein Preis */
+        return wert * (1 - (S.guildPct || 0) / 100);
+      }
+
+      /* --- Wo kauft man, wo verkauft man? -------------------------------
+         Beides je Stufe getrennt bestimmt. Die Rueckgaberate bleibt aussen
+         vor: sie wirkt in jeder Stadt gleich und verschoebe die Rangfolge
+         nicht. Fehlt in einer Stadt auch nur ein Materialpreis, faellt sie
+         als Einkaufsort weg - eine Teilrechnung waere irrefuehrend. */
+      function bestEinkauf(it, e) {
+        var side = AO.craft.buySide(AO.settings.buyMethod);
+        var rez = AO.craft.recipeFor(it, e);
+        var beste = null;
+        AO.data.cities.forEach(function (city) {
+          var summe = 0, vollstaendig = true;
+          rez.forEach(function (r) {
+            var p = AO.market.get(AO.craft.matId(r[0], e, r[2]), city, 1, side);
+            if (p == null) { vollstaendig = false; return; }
+            summe += r[1] * p;
+          });
+          if (vollstaendig && (!beste || summe < beste.kosten)) {
+            beste = { city: city, kosten: summe };
+          }
+        });
+        return beste;
+      }
+
+      function bestVerkauf(it, e) {
+        var pid = AO.craft.productId(it, e);
+        var q = cfg.quality ? S.quality : 1;
+        var orte = cfg.blackMarket ? AO.data.sellLocations : AO.data.cities;
+        var beste = null;
+        orte.forEach(function (city) {
+          var p = AO.market.get(pid, city, q,
+                                AO.craft.sellSideAt(city, AO.settings.sellMethod));
+          if (p == null) return;
+          var netto = p * AO.craft.sellMultiplierAt(city, AO.settings.premium,
+                                                    AO.settings.sellMethod);
+          if (!beste || netto > beste.netto) beste = { city: city, preis: p, netto: netto };
+        });
+        return beste;
+      }
+
       function compute(itemOverride) {
         var it = itemOverride || current(); if (!it) return null;
         /* Nicht verzauberbare Stufen (T2/T3) bleiben normal, auch wenn oben
@@ -819,7 +911,8 @@
           premium: AO.settings.premium, buyMethod: AO.settings.buyMethod,
           sellMethod: AO.settings.sellMethod, stationFee: S.fee,
           focusPerCraft: (it.f && it.f[e]) || 0, useFocus: S.focus,
-          productId: prodId
+          productId: prodId,
+          guildPrice: gildenPreis(prodId, cfg.quality ? S.quality : 1)
         });
       }
 
@@ -961,6 +1054,11 @@
         /* Alle Stufen im Vergleich */
         if (el.ovRows) {
           var fam = FAM[S.fam];
+          if (el.ovNote) {
+            el.ovNote.textContent = fam
+              ? 'alle Stufen von ' + fam.name + ' · gleiche Einstellungen'
+              : 'gleiche Einstellungen, T2 bis T8';
+          }
           var tiers = fam ? Object.keys(fam.tiers).map(Number).sort(function (a, b) { return a - b; }) : [];
           el.ovRows.innerHTML = tiers.map(function (t) {
             var x = fam.tiers[t];
@@ -968,15 +1066,45 @@
             var cur = t === S.tier;
             var xe = (cfg.ench && AO.craft.enchantable(x)) ? S.ench : 0;
             var kosten = dd.out ? dd.costTotal / dd.out : NaN;
+            var ein = bestEinkauf(x, xe);
+            var ver = S.guild ? null : bestVerkauf(x, xe);
+            /* Die Zahl in Klammern haette eine andere Bezugsgroesse als die
+               Nachbarspalten (Material je Craft vor Rueckgabe gegen Kosten je
+               Stueck danach). Nebeneinander gestellt liest sich das falsch -
+               deshalb steht in der Spalte nur der Ort, die Zahl im Tooltip. */
+            var einTxt = ein
+              ? '<b title="Material je Craft in ' + F.esc(F.ort(ein.city)) + ': ' +
+                F.s(ein.kosten) + ' – noch ohne Rückgabe">' +
+                F.esc(F.ort(ein.city)) + '</b>'
+              : '<span class="mut">kein Preis</span>';
+            var verTxt = S.guild
+              ? '<b title="Marktwert über alle Städte abzüglich Rabatt">an die Gilde</b>'
+              : (ver
+                ? '<b title="Angebot dort ' + F.s(ver.preis) + ', nach Steuer und Gebühr ' +
+                  F.s(ver.netto) + '">' + F.esc(F.ort(ver.city)) + '</b>'
+                : '<span class="mut">kein Preis</span>');
             return '<tr class="hover"' + (cur ? ' style="background:var(--goldDim)"' : '') + '>' +
               '<td><div class="itemcell">' + F.img(AO.craft.productId(x, xe), 56, x.n) +
                 '<div class="nm"><b>' + F.tier(t, xe) + ' ' + F.esc(x.n) + '</b></div></div></td>' +
+              '<td>' + einTxt + '</td>' +
+              '<td>' + verTxt + '</td>' +
               '<td>' + F.s(kosten) + '</td>' +
-              '<td>' + F.s(dd.sellPrice) + '</td>' +
-              '<td class="' + (dd.perItem >= 0 ? 'pos' : 'neg') + '">' + F.sg(dd.perItem) + '</td>' +
-              '<td class="' + (dd.margin >= 0 ? 'pos' : 'neg') + '">' + F.pct(dd.margin) + '</td></tr>';
+              (dd.sellPrice == null
+                /* Ohne Verkaufspreis gibt es keinen Gewinn zu melden - eine
+                   Null waere hier eine Behauptung, kein Messwert. */
+                ? '<td class="mut" colspan="3">kein Verkaufspreis' +
+                  (ver ? ' in ' + F.esc(F.ort(S.sellCity)) : '') + '</td>'
+                : '<td>' + F.s(dd.sellPrice) + '</td>' +
+                  '<td class="' + (dd.perItem >= 0 ? 'pos' : 'neg') + '">' + F.sg(dd.perItem) + '</td>' +
+                  '<td class="' + (dd.margin >= 0 ? 'pos' : 'neg') + '">' + F.pct(dd.margin) + '</td>') +
+              '</tr>';
           }).join('');
         }
+
+        /* Der Hinweis nennt die Grenze, ab der die Gilde teurer wird als der
+           Markt - die haengt an Premium und Verkaufsart und muss deshalb
+           mitlaufen, nicht nur beim Umschalten stehen. */
+        if (el.guild) syncGuild();
 
         if (keep) {
           var again = root.querySelector('.pinput[data-id="' + keep.id + '"][data-city="' + keep.city +
@@ -986,6 +1114,26 @@
             try { again.setSelectionRange(keep.start, keep.end); } catch (e) {}
           }
         }
+      }
+
+      /* Zeigt, ab welchem Rabatt sich der Gildenverkauf gegenueber dem
+         Markt nicht mehr lohnt. Mit Premium bleiben ueber eine
+         Verkaufsorder 93,5 % des Preises - ab rund -6,5 % verschenkt man
+         also, statt zu sparen. */
+      function syncGuild() {
+        if (!el.guild) return;
+        var an = !!S.guild;
+        el.guildBox.hidden = !an;
+        el.guildHint.hidden = !an;
+        if (!an) return;
+        var m = AO.craft.sellMultiplierAt(S.sellCity, AO.settings.premium,
+                                          AO.settings.sellMethod);
+        el.guildHint.innerHTML =
+          'Direkter Handel: keine Verkaufssteuer, keine Ordergebühr. ' +
+          'Über den Markt blieben ' + F.n1(m * 100) + ' % übrig – ab einem ' +
+          'Rabatt von ' + F.n1((1 - m) * 100) + ' % ist die Gilde also teurer ' +
+          'als der Markt. Der Marktwert kommt aus den Handelsdaten; ohne sie ' +
+          'bleibt der Preis leer.';
       }
 
       function line(l, v, dim, total) {

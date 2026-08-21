@@ -1,7 +1,7 @@
 {
   "name": "albion-toolkit",
   "productName": "Albion Toolkit",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Rechner für die Wirtschaft von Albion Online – Refining, Crafting, Aufwertung, Chancen",
   "private": true,
   "main": "electron/main.js",

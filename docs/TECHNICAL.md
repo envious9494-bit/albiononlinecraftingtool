@@ -330,6 +330,65 @@ views.**
   detail behind "More filters". Crafting Deals and the enchanting view
   previously had up to ten controls side by side.
 
+## Refining: guild sales and every kind at once
+
+Refining is a volume business. Two things were missing for that.
+
+### Selling to the guild
+
+A checkbox in the market column switches the calculator to direct trade with
+guild members: the price is then the **market value minus a discount** (15 % by
+default), and **neither sales tax nor order fee** applies – a hand-to-hand
+trade knows neither.
+
+Checked on 100 × T5 leather: through the market 4 % tax and 2.5 % order fee,
+through the guild both zero. With premium the market leaves **93.5 %** of the
+price – so **from a 6.5 % discount onwards you are giving money away rather
+than saving it**. That is exactly what the hint under the switch says, and it
+follows the settings: turn premium off and it reads 10.5 %.
+
+The market value comes from actual trades across all cities, not from an offer.
+It therefore needs trade data – in guild mode "Load market prices" fetches it
+for the products of that view as well. If it is missing, the price stays empty
+rather than being guessed.
+
+The guild sale sits in the shared calculation core (`AO.craft.calc` accepts a
+`guildPrice`) and could be enabled in any calculator; for now it is on in
+refining only, because that is what was asked for.
+
+### Every kind in a family, with the location
+
+The panel **"All tiers compared"** was collapsed and only showed cost, sale,
+profit and margin. It is now open and additionally names, per tier:
+
+* **cheapest purchase** – the city where the material for that tier costs the
+  least in total. If even one material price is missing there, that city drops
+  out; a partial calculation would mislead.
+* **best sale** – the location with the highest proceeds **after** tax and
+  order fee. In guild mode it reads "to the guild".
+
+The numbers behind them sit in the tooltip, not in the column. The reason: they
+would have a different basis from their neighbours – material per craft
+*before* the return rate against cost per unit *after* it. Side by side that
+reads wrong.
+
+An example from the test run (leather, buying and selling set to Caerleon):
+
+| Tier | cheapest purchase | best sale | Cost / unit | Sale / unit |
+|---|---|---|---|---|
+| T5 Worked Leather | Fort Sterling | Caerleon | 1,723 | 1,595 |
+| T8 Hardened Leather | Lymhurst | Brecilien | 18,313 | no sale price in Caerleon |
+
+### A bug that came to light along the way
+
+The T8 row previously showed **0** as the sale price and therefore a −100 %
+margin – although there simply was no offer there. The cause is a JavaScript
+quirk: `isFinite(null)` is **true**, because `null` becomes `0`. The formatter
+therefore took the missing price for a valid zero.
+
+`F.s()` and `F.sg()` now check explicitly for `null` and `undefined`. Since
+then the row says "no sale price in Caerleon" instead of claiming a total loss.
+
 ## Profit overview in the single-item calculators
 
 Below every single-item calculator there is now **"What is worth it right
