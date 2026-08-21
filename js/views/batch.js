@@ -17,7 +17,7 @@
     items:      { n: 'Ausrüstung', ench: true,  quality: true,  src: function () { return AO.data.items; } },
     refining:   { n: 'Refining',   ench: true,  quality: false, src: function () { return AO.data.refining; } },
     food:       { n: 'Nahrung',    ench: false, quality: false, src: function () { return AO.data.consumables.filter(function (c) { return c.c === 'food'; }).concat(AO.data.fish || []); } },
-    potion:     { n: 'Tränke',     ench: false, quality: false, src: function () { return AO.data.consumables.filter(function (c) { return c.c === 'potion'; }); } }
+    potion:     { n: 'Tränke',     ench: true,  quality: false, src: function () { return AO.data.consumables.filter(function (c) { return c.c === 'potion'; }); } }
   };
 
   var S = AO.store.bind('batch', {
@@ -262,7 +262,13 @@
       }
 
       function syncEnchSeg() {
-        el.enchSeg.innerHTML = U.seg([0, 1, 2, 3, 4].map(function (e) {
+        /* Hoechste Stufe der gewaehlten Warengruppe - Traenke enden bei .3. */
+        var liste = cfg().src();
+        var max = liste.length ? Math.max.apply(null, liste.map(AO.craft.enchMax)) : 4;
+        if (S.ench > max) S.ench = 0;
+        var stufen = [0];
+        for (var i = 1; i <= max; i++) stufen.push(i);
+        el.enchSeg.innerHTML = U.seg(stufen.map(function (e) {
           return { v: String(e), n: e ? '.' + e : 'Normal' };
         }), String(S.ench));
       }
@@ -276,7 +282,7 @@
          und Artefakte (gehören zum einzelnen Gegenstand). */
       function split(it) {
         var e = enchOf(it), norm = [], art = [];
-        it.r.forEach(function (entry) {
+        AO.craft.recipeFor(it, S.ench).forEach(function (entry) {
           var id = AO.craft.matId(entry[0], e, entry[2]);
           (AO.craft.noReturn(id) ? art : norm).push({ id: id, count: entry[1] });
         });
@@ -323,7 +329,7 @@
             }
             return matPrice(it.id, id);
           },
-          recipe: it.r, ench: e, amountCrafted: it.a, crafts: S.crafts,
+          recipe: AO.craft.recipeFor(it, e), ench: e, amountCrafted: it.a, crafts: S.crafts,
           returnRate: rate(), buyCity: S.buyCity, sellCity: S.sellCity,
           quality: cfg().quality ? S.quality : 1,
           premium: AO.settings.premium, buyMethod: AO.settings.buyMethod,

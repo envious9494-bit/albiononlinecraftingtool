@@ -395,6 +395,11 @@ Because the recipe differs per level, the ingredient lists live in
 `data/consumables.js` under `re` (one entry per level). `AO.craft.recipeFor()`
 picks one, `AO.craft.enchMax()` reports the highest level.
 
+The levels are available in **all four calculators** that know about potions:
+the potion calculator, Crafting Deals, the batch calculator and the
+opportunities tab – each with a tier bar that stops at `.3`. In the focus
+calculator it follows the selected item: sword `.0`–`.4`, potion `.0`–`.3`.
+
 Established from `items.xml`: all 40 potions carry an `<enchantments>` block
 with levels 1 to 3. Verified on the T8 gathering potion .3 in Martlock (city
 bonus 36.7 %, fee 800, premium, 10 crafts): material 18,820,387, station fee

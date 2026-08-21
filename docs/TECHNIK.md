@@ -405,6 +405,11 @@ Weil das Rezept je Stufe ein eigenes ist, liegen die Zutatenlisten in
 `data/consumables.js` unter `re` (ein Eintrag je Stufe). `AO.craft.recipeFor()`
 wählt aus, `AO.craft.enchMax()` nennt die höchste Stufe.
 
+Die Stufen stehen in **allen vier Rechnern**, die Tränke kennen: Trank-Rechner,
+Craft-Chancen, Serien-Rechner und Chancen-Reiter – jeweils mit einer
+Stufenleiste, die bei `.3` endet. Beim Fokus-Rechner richtet sie sich nach
+dem gewählten Gegenstand: Schwert `.0`–`.4`, Trank `.0`–`.3`.
+
 Belegt aus `items.xml`: alle 40 Tränke führen einen `<enchantments>`-Block mit
 den Stufen 1 bis 3. Nachgerechnet am T8-Sammeltrank .3 in Martlock
 (Stadtbonus 36,7 %, Gebühr 800, Premium, 10 Crafts): Material 18.820.387,

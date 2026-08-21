@@ -10,7 +10,7 @@
   var SCOPES = [
     { v: 'refining', n: 'Refining', src: function () { return AO.data.refining; }, ench: true, bonus: true },
     { v: 'food',     n: 'Nahrung',  src: function () { return AO.data.consumables.filter(function (c) { return c.c === 'food'; }); } },
-    { v: 'potion',   n: 'Tränke',   src: function () { return AO.data.consumables.filter(function (c) { return c.c === 'potion'; }); } },
+    { v: 'potion',   n: 'Tränke',   src: function () { return AO.data.consumables.filter(function (c) { return c.c === 'potion'; }); }, ench: true },
     { v: 'fish',     n: 'Fisch',    src: function () { return AO.data.fish || []; } }
   ];
 
@@ -191,7 +191,17 @@
       function syncScope() {
         var c = scopeCfg();
         el.enchWrap.hidden = !c.ench;
-        if (!c.ench) S.ench = 0;
+        if (!c.ench) { S.ench = 0; return; }
+        /* Die Stufenleiste richtet sich nach der Warengruppe: Traenke gehen
+           nur bis .3, raffinierte Rohstoffe bis .4. */
+        var liste = c.src();
+        var max = liste.length ? Math.max.apply(null, liste.map(AO.craft.enchMax)) : 4;
+        if (S.ench > max) S.ench = 0;
+        var stufen = [0];
+        for (var i = 1; i <= max; i++) stufen.push(i);
+        el.enchSeg.innerHTML = U.seg(stufen.map(function (e) {
+          return { v: String(e), n: e ? '.' + e : 'Normal' };
+        }), String(S.ench));
       }
       function rate() { return AO.craft.returnRate(S.rrMode, S.rrManual); }
       function isHideout() { return S.rrMode === 'hideout' || S.rrMode === 'hideoutfocus'; }
@@ -262,7 +272,7 @@
             var sell = bestPlaceSell(prodId, 1, AO.settings.sellMethod);
             var mats = [], ok = !!sell;
 
-            it.r.forEach(function (entry) {
+            AO.craft.recipeFor(it, e).forEach(function (entry) {
               if (!ok) return;
               var id = AO.craft.matId(entry[0], e, entry[2]);
               /* Der Schwarzmarkt handelt keine Rohstoffe - er darf nie als
@@ -282,7 +292,7 @@
                 if (id === prodId) return sell.v;
                 return (id in priceMap) ? priceMap[id] : null;
               },
-              recipe: it.r, ench: e, amountCrafted: it.a, crafts: S.crafts,
+              recipe: AO.craft.recipeFor(it, e), ench: e, amountCrafted: it.a, crafts: S.crafts,
               returnRate: r, buyCity: '-', sellCity: sell.city, quality: 1,
               premium: AO.settings.premium, buyMethod: AO.settings.buyMethod,
               sellMethod: AO.settings.sellMethod, stationFee: S.fee,

@@ -150,7 +150,12 @@
         var it = find(S.item);
         var ok = it && AO.craft.enchantable(it);
         if (!ok) S.ench = 0;
-        el.enchSeg.innerHTML = U.seg([0, 1, 2, 3, 4].map(function (e) {
+        /* Traenke gehen nur bis .3 - fuer .4 gibt es kein Rezept. */
+        var max = it ? AO.craft.enchMax(it) : 4;
+        if (S.ench > max) S.ench = 0;
+        var stufen = [0];
+        for (var i = 1; i <= max; i++) stufen.push(i);
+        el.enchSeg.innerHTML = U.seg(stufen.map(function (e) {
           return { v: String(e), n: e ? '.' + e : 'Normal' };
         }), String(S.ench));
         U.qa('button', el.enchSeg).forEach(function (b) {
@@ -161,7 +166,7 @@
       function run(rate) {
         var it = find(S.item);
         return AO.craft.calc({
-          recipe: it.r, ench: S.ench, amountCrafted: it.a, crafts: S.crafts,
+          recipe: AO.craft.recipeFor(it, S.ench), ench: S.ench, amountCrafted: it.a, crafts: S.crafts,
           returnRate: rate, buyCity: S.city, sellCity: S.city, quality: 1,
           premium: AO.settings.premium, buyMethod: AO.settings.buyMethod,
           sellMethod: AO.settings.sellMethod, stationFee: S.fee,
