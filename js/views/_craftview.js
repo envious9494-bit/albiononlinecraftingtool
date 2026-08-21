@@ -544,7 +544,10 @@
         var it = current();
         var ok = canEnch(it);
         if (!ok) S.ench = 0;
-        el.enchSeg.innerHTML = U.seg([0, 1, 2, 3, 4].map(function (e) {
+        var stufen = [0];
+        for (var sx = 1; sx <= AO.craft.enchMax(it); sx++) stufen.push(sx);
+        if (S.ench > AO.craft.enchMax(it)) S.ench = 0;
+        el.enchSeg.innerHTML = U.seg(stufen.map(function (e) {
           return { v: String(e), n: e ? '.' + e : 'Normal' };
         }), String(S.ench));
         U.qa('button', el.enchSeg).forEach(function (b) {
@@ -657,7 +660,9 @@
           var h = d ? (Date.now() - d.getTime()) / 3600000 : Infinity;
           if (h > alter) alter = h;
         }
-        it.r.forEach(function (r) { merke(AO.craft.matId(r[0], e, r[2]), S.buyCity, 1, side); });
+        AO.craft.recipeFor(it, e).forEach(function (r) {
+          merke(AO.craft.matId(r[0], e, r[2]), S.buyCity, 1, side);
+        });
         merke(AO.craft.productId(it, e), S.sellCity, cfg.quality ? S.quality : 1,
               AO.craft.sellSideAt(S.sellCity, AO.settings.sellMethod));
         return alter;
@@ -755,7 +760,7 @@
       function unitCost(item, ench, depth) {
         var r = rate(), mats = 0;
         var fee = AO.settings.buyMethod === 'order' ? 1 + AO.data.consts.orderFee : 1;
-        item.r.forEach(function (e) {
+        AO.craft.recipeFor(item, ench).forEach(function (e) {
           var id = AO.craft.matId(e[0], ench, e[2]);
           var sub = (depth < 8 && cfg.byId) ? cfg.byId(id) : null;
           var p;
@@ -770,7 +775,8 @@
              waehrend normale Materialien unten um (1-r) gemindert werden. */
           mats += e[1] * (p || 0) * (AO.craft.noReturn(id) ? 1 / (1 - r) : 1);
         });
-        var iv = AO.craft.itemValue(item.r, ench, AO.craft.productId(item, ench)).value;
+        var iv = AO.craft.itemValue(AO.craft.recipeFor(item, ench), ench,
+                                    AO.craft.productId(item, ench)).value;
         return (mats * (1 - r) + AO.craft.stationFee(iv, S.fee)) / (item.a || 1);
       }
 
@@ -807,7 +813,7 @@
 
           priceOf: cfg.selfCraft ? makePriceOf(prodId) : null,
           isBuilt: cfg.selfCraft ? isBuilt : null,
-          recipe: it.r, ench: e, amountCrafted: it.a, crafts: S.crafts,
+          recipe: AO.craft.recipeFor(it, e), ench: e, amountCrafted: it.a, crafts: S.crafts,
           returnRate: rate(), buyCity: S.buyCity, sellCity: S.sellCity,
           quality: cfg.quality ? S.quality : 1,
           premium: AO.settings.premium, buyMethod: AO.settings.buyMethod,
@@ -829,7 +835,8 @@
           return;
         }
         el.recipeNote.textContent = '1 Craft ergibt ' + it.a + '× ' + it.n +
-          ' · Item-Wert ' + F.n2(AO.craft.itemValue(it.r, S.ench, AO.craft.productId(it, S.ench)).value);
+          ' · Item-Wert ' + F.n2(AO.craft.itemValue(AO.craft.recipeFor(it, S.ench), S.ench,
+                                                    AO.craft.productId(it, S.ench)).value);
 
         var d = compute();
         el.matRows.innerHTML = d.rows.map(function (r) {

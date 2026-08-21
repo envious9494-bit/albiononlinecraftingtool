@@ -379,6 +379,75 @@ Die vollständige Prüfung – Marktwert, Fantasieangebote, Datenalter als harte
 Bedingung, alle Warengruppen auf einmal – bleibt den **Craft-Chancen**
 vorbehalten. Die Übersicht hier ist der schnelle Blick, nicht der Ersatz.
 
+## Verzauberte Tränke
+
+Tränke lassen sich verzaubern – im Spiel als **T8.1**, **T7.2**, **T8.3** und
+so weiter. Der Toolkit kannte bisher nur die Grundstufe.
+
+Die Bauart unterscheidet sich von der bei Ausrüstung. Ein verzaubertes
+Schwert nimmt dieselben Zutaten in verzauberter Form (`T4_METALBAR_LEVEL1`).
+Ein verzauberter Trank dagegen nimmt **das unveränderte Grundrezept plus ein
+Arkanes Extrakt**:
+
+| Stufe | zusätzlich | Fokus (T8-Sammeltrank) |
+|---|---|---|
+| .0 | – | 1.319 |
+| .1 | 90 × Einfaches Arkanes Extrakt | 1.520 |
+| .2 | 90 × Verfeinertes Arkanes Extrakt | 1.920 |
+| .3 | 90 × Reines Arkanes Extrakt | 3.121 |
+
+Mengen und Ausbeute der übrigen Zutaten bleiben gleich. Eine Stufe **.4 gibt
+es nicht** – für sie führt das Spiel kein Trank-Rezept. Die Stufenleiste im
+Trank-Rechner zeigt deshalb nur `.0` bis `.3`, und die Craft-Chancen prüfen
+bei „alle" entsprechend nur diese Stufen.
+
+Weil das Rezept je Stufe ein eigenes ist, liegen die Zutatenlisten in
+`data/consumables.js` unter `re` (ein Eintrag je Stufe). `AO.craft.recipeFor()`
+wählt aus, `AO.craft.enchMax()` nennt die höchste Stufe.
+
+Belegt aus `items.xml`: alle 40 Tränke führen einen `<enchantments>`-Block mit
+den Stufen 1 bis 3. Nachgerechnet am T8-Sammeltrank .3 in Martlock
+(Stadtbonus 36,7 %, Gebühr 800, Premium, 10 Crafts): Material 18.820.387,
+Nutzungsgebühr 129.600, Verkauf 209.959 je Stück – Gewinn **681.180**, von
+Hand und im Rechner auf den Silber gleich.
+
+### Die seltene Zutat kommt nicht zurück
+
+Jedes Trank-Rezept enthält eine seltene Alchemie-Zutat – Geisterpfoten,
+Runensteinzahn und ähnliche. Auf sie wurde bisher die Rückgaberate
+angewendet, was den Einkauf zu billig rechnete.
+
+Die Spieldaten sagen es ausdrücklich:
+
+```xml
+<craftresource uniquename="T7_ALCHEMY_RARE_ELEMENTAL" count="1" maxreturnamount="0" />
+```
+
+`maxreturnamount="0"` heißt: nie zurück. **21 Zutaten** tragen das Merkmal
+(sieben Familien × T3/T5/T7); sie sind jetzt wie Artefakte markiert. Bei einem
+Lauf über 10 Crafts mit 36,7 % Rückgabe schlägt das voll durch: 10 Stück
+statt gerechneter 6,33.
+
+Dasselbe Merkmal steht auch an **verzauberten Rohstoffen in
+Ausrüstungsrezepten** (`T4_METALBAR_LEVEL1` und ähnliche, rund 250 Einträge).
+Ob das im Spiel wirklich bedeutet, dass sie beim Craften nicht zurückkommen,
+ist hier nicht nachgeprüft – deshalb bleibt es dort vorerst unangetastet.
+
+### Nicht jedes „_LEVEL" trägt am Markt ein „@"
+
+Beim Nachtragen fiel eine zweite Sache auf. Raffinierte Rohstoffe heißen am
+Markt `T4_METALBAR_LEVEL1@1`; das Arkane Extrakt und die Fischsauce dagegen
+schlicht `T1_ALCHEMY_EXTRACT_LEVEL1`. Beide Formen wurden gegen die API
+geprüft – die jeweils andere hat in **keiner** Stadt ein Angebot:
+
+| | ohne `@` | mit `@` |
+|---|---|---|
+| `T4_CLOTH_LEVEL1`, `T4_ROCK_LEVEL1`, `T5_HIDE_LEVEL2`, `T6_WOOD_LEVEL1` | 0 Angebote | 6 Angebote |
+| `T1_ALCHEMY_EXTRACT_LEVEL2`, `T1_FISHSAUCE_LEVEL2` | 3 bzw. 6 Angebote | 0 |
+
+Die Umschreibung in `AO.market.marketId()` prüft deshalb ein Merkmal `pm` am
+Material, statt die Endung allein zu betrachten.
+
 ## Wie viele Stufen ein Gericht hat
 
 Im Koch-Rechner wirkt die Stufenleiste kurz – beim Salat stehen dort nur

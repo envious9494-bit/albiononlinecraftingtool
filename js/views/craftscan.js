@@ -342,8 +342,14 @@
       /* ------------------------------------------------------ Kandidaten */
       function enchStufen(it) {
         if (!AO.craft.enchantable(it)) return [0];
-        if (S.ench === 'alle') return [0, 1, 2, 3, 4];
-        return [+S.ench];
+        /* Traenke gehen nur bis .3 - fuer .4 gibt es im Spiel kein Rezept. */
+        var max = AO.craft.enchMax(it);
+        if (S.ench === 'alle') {
+          var alle = [0];
+          for (var i = 1; i <= max; i++) alle.push(i);
+          return alle;
+        }
+        return +S.ench <= max ? [+S.ench] : [];
       }
 
       function kandidaten() {
@@ -357,7 +363,9 @@
 
       function idsFor(k) {
         var ids = [AO.craft.productId(k.it, k.e)];
-        k.it.r.forEach(function (r) { ids.push(AO.craft.matId(r[0], k.e, r[2])); });
+        AO.craft.recipeFor(k.it, k.e).forEach(function (r) {
+          ids.push(AO.craft.matId(r[0], k.e, r[2]));
+        });
         return ids;
       }
 
@@ -377,14 +385,14 @@
           var h = d ? (Date.now() - d.getTime()) / 3600000 : Infinity;
           if (h > alter) alter = h;
         }
-        it.r.forEach(function (r) {
+        AO.craft.recipeFor(it, e).forEach(function (r) {
           var id = AO.craft.matId(r[0], e, r[2]);
           merke(id, S.buyCity, 1, buySide);
         });
         merke(prodId, S.sellCity, QUAL, sellSide);
 
         var d = AO.craft.calc({
-          recipe: it.r, ench: e, amountCrafted: it.a, crafts: 1,
+          recipe: AO.craft.recipeFor(it, e), ench: e, amountCrafted: it.a, crafts: 1,
           returnRate: rate(), buyCity: S.buyCity, sellCity: S.sellCity,
           quality: QUAL, premium: AO.settings.premium,
           buyMethod: AO.settings.buyMethod, sellMethod: AO.settings.sellMethod,

@@ -41,7 +41,15 @@
      eine bereits vollstaendige Kennung bleibt unveraendert. */
   function marktId(id) {
     var m = /_LEVEL([1-4])$/.exec(id);
-    return m ? id + '@' + m[1] : id;
+    if (!m) return id;
+    /* Nicht jede Kennung mit "_LEVELn" ist am Markt verzaubert: raffinierte
+       Rohstoffe heissen dort "T4_METALBAR_LEVEL1@1", Fischsauce und Arkanes
+       Extrakt dagegen schlicht "T1_FISHSAUCE_LEVEL1". Beides nachgemessen -
+       die jeweils andere Form hat in keiner Stadt ein Angebot. Betroffene
+       Materialien tragen deshalb das Merkmal "pm" (plain market id). */
+    var mat = (AO.data.materials || {})[id];
+    if (mat && mat.pm) return id;
+    return id + '@' + m[1];
   }
 
   function key(id, city, q) { return marktId(id) + '|' + city + '|' + (q || 1); }

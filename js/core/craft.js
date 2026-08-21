@@ -213,7 +213,9 @@
     /* Alle Item-IDs, die fuer eine Kalkulation Preise brauchen */
     idsFor: function (item, ench) {
       var ids = [AO.craft.productId(item, ench)];
-      item.r.forEach(function (e) { ids.push(matId(e[0], ench, e[2])); });
+      AO.craft.recipeFor(item, ench).forEach(function (e) {
+        ids.push(matId(e[0], ench, e[2]));
+      });
       return ids;
     },
 
@@ -227,9 +229,28 @@
       return item.id + '@' + ench;
     },
 
-    /* Kann dieses Item ueberhaupt verzaubert werden? */
+    /* Kann dieses Item ueberhaupt verzaubert werden?
+
+       Zwei Bauarten: Ausruestung nimmt dieselben Zutaten in verzauberter
+       Form (T4_METALBAR_LEVEL1) - erkennbar am Merkmal 1 in der Zutat.
+       Traenke dagegen haben je Stufe ein eigenes Rezept: Grundrezept plus
+       ein Arkanes Extrakt. Die liegen in "re". */
     enchantable: function (item) {
+      if (item.re && item.re.length) return true;
       return item.r.some(function (e) { return e[2] === 1; });
+    },
+
+    /* Hoechste Verzauberungsstufe. Ausruestung geht bis .4, Traenke nur
+       bis .3 - im Spiel gibt es fuer .4 kein Trank-Rezept. */
+    enchMax: function (item) {
+      if (item.re && item.re.length) return item.re.length;
+      return 4;
+    },
+
+    /* Das Rezept, das fuer diese Stufe wirklich gilt. */
+    recipeFor: function (item, ench) {
+      if (ench > 0 && item.re && item.re[ench - 1]) return item.re[ench - 1];
+      return item.r;
     }
   };
 })();

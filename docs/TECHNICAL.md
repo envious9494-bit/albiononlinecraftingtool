@@ -370,6 +370,74 @@ The full check – market value, fantasy offers, data age as a hard condition,
 all product groups at once – remains the job of **Crafting Deals**. The
 overview here is the quick glance, not a replacement.
 
+## Enchanted potions
+
+Potions can be enchanted – **T8.1**, **T7.2**, **T8.3** and so on in game. The
+toolkit previously knew only the base level.
+
+The construction differs from equipment. An enchanted sword takes the same
+ingredients in enchanted form (`T4_METALBAR_LEVEL1`). An enchanted potion, by
+contrast, takes **the unchanged base recipe plus an arcane extract**:
+
+| Level | additionally | Focus (T8 gathering potion) |
+|---|---|---|
+| .0 | – | 1,319 |
+| .1 | 90 × Basic Arcane Extract | 1,520 |
+| .2 | 90 × Refined Arcane Extract | 1,920 |
+| .3 | 90 × Pure Arcane Extract | 3,121 |
+
+Quantities and yield of the other ingredients stay the same. A level **.4 does
+not exist** – the game carries no potion recipe for it. The tier bar in the
+potion calculator therefore only offers `.0` to `.3`, and Crafting Deals checks
+only those levels under "all".
+
+Because the recipe differs per level, the ingredient lists live in
+`data/consumables.js` under `re` (one entry per level). `AO.craft.recipeFor()`
+picks one, `AO.craft.enchMax()` reports the highest level.
+
+Established from `items.xml`: all 40 potions carry an `<enchantments>` block
+with levels 1 to 3. Verified on the T8 gathering potion .3 in Martlock (city
+bonus 36.7 %, fee 800, premium, 10 crafts): material 18,820,387, station fee
+129,600, sale 209,959 per unit – profit **681,180**, identical by hand and in
+the calculator down to the silver.
+
+### The rare ingredient does not come back
+
+Every potion recipe contains a rare alchemy ingredient – spirit paws, runestone
+tooth and the like. The return rate used to be applied to them, which made the
+purchase come out too cheap.
+
+The game data says so explicitly:
+
+```xml
+<craftresource uniquename="T7_ALCHEMY_RARE_ELEMENTAL" count="1" maxreturnamount="0" />
+```
+
+`maxreturnamount="0"` means: never returned. **21 ingredients** carry the
+marker (seven families × T3/T5/T7); they are now flagged like artifacts. Over
+10 crafts at a 36.7 % return rate that matters in full: 10 units instead of a
+calculated 6.33.
+
+The same marker also sits on **enchanted raw resources in equipment recipes**
+(`T4_METALBAR_LEVEL1` and similar, around 250 entries). Whether that really
+means they are not returned when crafting has not been verified here – so it is
+left untouched there for now.
+
+### Not every "_LEVEL" carries an "@" on the market
+
+Adding this brought a second thing to light. Refined resources are called
+`T4_METALBAR_LEVEL1@1` on the market; the arcane extract and the fish sauce,
+on the other hand, are simply `T1_ALCHEMY_EXTRACT_LEVEL1`. Both forms were
+checked against the API – the other one has an offer in **no** city at all:
+
+| | without `@` | with `@` |
+|---|---|---|
+| `T4_CLOTH_LEVEL1`, `T4_ROCK_LEVEL1`, `T5_HIDE_LEVEL2`, `T6_WOOD_LEVEL1` | 0 offers | 6 offers |
+| `T1_ALCHEMY_EXTRACT_LEVEL2`, `T1_FISHSAUCE_LEVEL2` | 3 resp. 6 offers | 0 |
+
+The rewriting in `AO.market.marketId()` therefore checks a `pm` marker on the
+material instead of going by the suffix alone.
+
 ## How many tiers a dish has
 
 In the cooking calculator the tier bar looks short – for a salad it only offers

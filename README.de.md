@@ -48,9 +48,10 @@ Nutzungsgebühr – nur das Material. Steuern und Ordergebühren fallen wie übl
 
 ### Einzelrechner für jeden Fall
 
-Crafting, Refining, Kochen, Tränke, Serien, Gewinn, Materialkosten, Steuer,
-Fokus, Ressourcenwert, Fame – sechzehn Ansichten, alle mit denselben
-Einstellungen für Stadt, Gebühr, Steuer und Premium.
+Crafting, Refining, Kochen, Tränke (auch verzaubert, .1 bis .3), Serien,
+Gewinn, Materialkosten, Steuer, Fokus, Ressourcenwert, Fame – sechzehn
+Ansichten, alle mit denselben Einstellungen für Stadt, Gebühr, Steuer und
+Premium.
 
 ![Crafting-Rechner](docs/bilder/04-crafting-rechner.png)
 

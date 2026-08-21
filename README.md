@@ -46,9 +46,9 @@ fee – only the material. Tax and order fees apply as usual.
 
 ### A calculator for every case
 
-Crafting, refining, cooking, potions, batches, profit, material costs, tax,
-focus, item value, fame – sixteen views, all sharing the same settings for
-city, fee, tax and premium.
+Crafting, refining, cooking, potions (including enchanted, .1 to .3),
+batches, profit, material costs, tax, focus, item value, fame – sixteen
+views, all sharing the same settings for city, fee, tax and premium.
 
 ![Crafting calculator](docs/bilder/04-crafting-rechner.png)
 
