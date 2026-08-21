@@ -370,14 +370,21 @@ The full check – market value, fantasy offers, data age as a hard condition,
 all product groups at once – remains the job of **Crafting Deals**. The
 overview here is the quick glance, not a replacement.
 
-## Enchanted potions
+## Enchanted potions and dishes
 
-Potions can be enchanted – **T8.1**, **T7.2**, **T8.3** and so on in game. The
-toolkit previously knew only the base level.
+Potions and dishes can be enchanted – **T8.1**, **T7.2**, **T8.3** and so on in
+game. The toolkit previously knew only the base level.
 
 The construction differs from equipment. An enchanted sword takes the same
-ingredients in enchanted form (`T4_METALBAR_LEVEL1`). An enchanted potion, by
-contrast, takes **the unchanged base recipe plus an arcane extract**:
+ingredients in enchanted form (`T4_METALBAR_LEVEL1`). An enchanted potion or
+dish, by contrast, takes **the unchanged base recipe plus one ingredient**:
+
+| | Ingredient that carries the enchantment |
+|---|---|
+| Potions | arcane extract `T1_ALCHEMY_EXTRACT_LEVEL1/2/3` |
+| Dishes | fish sauce `T1_FISHSAUCE_LEVEL1/2/3` |
+
+Using the T8 gathering potion as the example:
 
 | Level | additionally | Focus (T8 gathering potion) |
 |---|---|---|
@@ -386,10 +393,19 @@ contrast, takes **the unchanged base recipe plus an arcane extract**:
 | .2 | 90 × Refined Arcane Extract | 1,920 |
 | .3 | 90 × Pure Arcane Extract | 3,121 |
 
-Quantities and yield of the other ingredients stay the same. A level **.4 does
-not exist** – the game carries no potion recipe for it. The tier bar in the
-potion calculator therefore only offers `.0` to `.3`, and Crafting Deals checks
-only those levels under "all".
+Quantities and yield of the other ingredients stay the same – verified across
+all 40 potions and all 51 dishes. A level **.4 does not exist**; the game
+carries no recipe for it. The tier bars therefore only offer `.0` to `.3`, and
+Crafting Deals checks only those levels under "all".
+
+Two dishes have **no** enchantment recipe at all: *Grilled Fish* and *Seaweed
+Salad* – the two that only exist at T1 anyway. For them the bar shows only
+"Normal".
+
+That had a side effect which only showed up when measuring: `enchMax()`
+returned `4` for items that cannot be enchanted. In the food group, a single
+one of those two T1 dishes pulled the tier bar of the **whole group** back up
+to `.4`. The function now returns `0` there.
 
 Because the recipe differs per level, the ingredient lists live in
 `data/consumables.js` under `re` (one entry per level). `AO.craft.recipeFor()`
@@ -400,11 +416,16 @@ the potion calculator, Crafting Deals, the batch calculator and the
 opportunities tab – each with a tier bar that stops at `.3`. In the focus
 calculator it follows the selected item: sword `.0`–`.4`, potion `.0`–`.3`.
 
-Established from `items.xml`: all 40 potions carry an `<enchantments>` block
-with levels 1 to 3. Verified on the T8 gathering potion .3 in Martlock (city
-bonus 36.7 %, fee 800, premium, 10 crafts): material 18,820,387, station fee
-129,600, sale 209,959 per unit – profit **681,180**, identical by hand and in
-the calculator down to the silver.
+Established from `items.xml`: **91 of 104** craftable consumables carry an
+`<enchantments>` block with levels 1 to 3. Checked by hand twice, both times
+matching the calculator down to the silver:
+
+| | Material | Fee | Sale per unit | Profit |
+|---|---|---|---|---|
+| T8 gathering potion .3, Martlock | 18,820,387 | 129,600 | 209,959 | **681,180** |
+| T6 mutton stew .2, Martlock | 2,766,805 | 21,600 | 80,000 | **4,695,915** |
+
+(City bonus 36.7 %, fee 800, premium, 10 crafts in both cases.)
 
 ### The rare ingredient does not come back
 

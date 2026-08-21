@@ -9,7 +9,7 @@
 
   var SCOPES = [
     { v: 'refining', n: 'Refining', src: function () { return AO.data.refining; }, ench: true, bonus: true },
-    { v: 'food',     n: 'Nahrung',  src: function () { return AO.data.consumables.filter(function (c) { return c.c === 'food'; }); } },
+    { v: 'food',     n: 'Nahrung',  src: function () { return AO.data.consumables.filter(function (c) { return c.c === 'food'; }); }, ench: true },
     { v: 'potion',   n: 'Tränke',   src: function () { return AO.data.consumables.filter(function (c) { return c.c === 'potion'; }); }, ench: true },
     { v: 'fish',     n: 'Fisch',    src: function () { return AO.data.fish || []; } }
   ];

@@ -379,15 +379,22 @@ Die vollständige Prüfung – Marktwert, Fantasieangebote, Datenalter als harte
 Bedingung, alle Warengruppen auf einmal – bleibt den **Craft-Chancen**
 vorbehalten. Die Übersicht hier ist der schnelle Blick, nicht der Ersatz.
 
-## Verzauberte Tränke
+## Verzauberte Tränke und Speisen
 
-Tränke lassen sich verzaubern – im Spiel als **T8.1**, **T7.2**, **T8.3** und
-so weiter. Der Toolkit kannte bisher nur die Grundstufe.
+Tränke und Gerichte lassen sich verzaubern – im Spiel als **T8.1**, **T7.2**,
+**T8.3** und so weiter. Der Toolkit kannte bisher nur die Grundstufe.
 
 Die Bauart unterscheidet sich von der bei Ausrüstung. Ein verzaubertes
 Schwert nimmt dieselben Zutaten in verzauberter Form (`T4_METALBAR_LEVEL1`).
-Ein verzauberter Trank dagegen nimmt **das unveränderte Grundrezept plus ein
-Arkanes Extrakt**:
+Ein verzauberter Trank oder ein verzaubertes Gericht dagegen nimmt **das
+unveränderte Grundrezept plus eine Zutat**:
+
+| | Zutat, die die Verzauberung trägt |
+|---|---|
+| Tränke | Arkanes Extrakt `T1_ALCHEMY_EXTRACT_LEVEL1/2/3` |
+| Speisen | Fischsauce `T1_FISHSAUCE_LEVEL1/2/3` |
+
+Am Beispiel des T8-Sammeltranks:
 
 | Stufe | zusätzlich | Fokus (T8-Sammeltrank) |
 |---|---|---|
@@ -396,10 +403,19 @@ Arkanes Extrakt**:
 | .2 | 90 × Verfeinertes Arkanes Extrakt | 1.920 |
 | .3 | 90 × Reines Arkanes Extrakt | 3.121 |
 
-Mengen und Ausbeute der übrigen Zutaten bleiben gleich. Eine Stufe **.4 gibt
-es nicht** – für sie führt das Spiel kein Trank-Rezept. Die Stufenleiste im
-Trank-Rechner zeigt deshalb nur `.0` bis `.3`, und die Craft-Chancen prüfen
-bei „alle" entsprechend nur diese Stufen.
+Mengen und Ausbeute der übrigen Zutaten bleiben gleich – bei allen 40 Tränken
+und allen 51 Gerichten nachgeprüft. Eine Stufe **.4 gibt es nicht**; dafür
+führt das Spiel kein Rezept. Die Stufenleisten zeigen deshalb nur `.0` bis
+`.3`, und die Craft-Chancen prüfen bei „alle" entsprechend nur diese Stufen.
+
+Zwei Gerichte haben **gar kein** Verzauberungsrezept: *Gegrillter Fisch* und
+*Seegras-Salat* – die beiden, die es ohnehin nur auf T1 gibt. Bei ihnen zeigt
+die Leiste nur „Normal".
+
+Das hatte eine Nebenwirkung, die erst beim Nachmessen auffiel: `enchMax()` gab
+für nicht verzauberbare Gegenstände `4` zurück. In der Warengruppe Nahrung zog
+ein einziges dieser beiden T1-Gerichte die Stufenleiste der **ganzen Gruppe**
+wieder auf `.4` hoch. Jetzt gibt die Funktion dort `0` zurück.
 
 Weil das Rezept je Stufe ein eigenes ist, liegen die Zutatenlisten in
 `data/consumables.js` unter `re` (ein Eintrag je Stufe). `AO.craft.recipeFor()`
@@ -410,11 +426,16 @@ Craft-Chancen, Serien-Rechner und Chancen-Reiter – jeweils mit einer
 Stufenleiste, die bei `.3` endet. Beim Fokus-Rechner richtet sie sich nach
 dem gewählten Gegenstand: Schwert `.0`–`.4`, Trank `.0`–`.3`.
 
-Belegt aus `items.xml`: alle 40 Tränke führen einen `<enchantments>`-Block mit
-den Stufen 1 bis 3. Nachgerechnet am T8-Sammeltrank .3 in Martlock
-(Stadtbonus 36,7 %, Gebühr 800, Premium, 10 Crafts): Material 18.820.387,
-Nutzungsgebühr 129.600, Verkauf 209.959 je Stück – Gewinn **681.180**, von
-Hand und im Rechner auf den Silber gleich.
+Belegt aus `items.xml`: **91 von 104** craftbaren Verbrauchsgütern führen
+einen `<enchantments>`-Block mit den Stufen 1 bis 3. Zweimal von Hand
+nachgerechnet, beide Male auf den Silber deckungsgleich mit dem Rechner:
+
+| | Material | Gebühr | Verkauf je Stück | Gewinn |
+|---|---|---|---|---|
+| T8-Sammeltrank .3, Martlock | 18.820.387 | 129.600 | 209.959 | **681.180** |
+| T6-Hammeleintopf .2, Martlock | 2.766.805 | 21.600 | 80.000 | **4.695.915** |
+
+(Jeweils Stadtbonus 36,7 %, Gebühr 800, Premium, 10 Crafts.)
 
 ### Die seltene Zutat kommt nicht zurück
 

@@ -240,11 +240,17 @@
       return item.r.some(function (e) { return e[2] === 1; });
     },
 
-    /* Hoechste Verzauberungsstufe. Ausruestung geht bis .4, Traenke nur
-       bis .3 - im Spiel gibt es fuer .4 kein Trank-Rezept. */
+    /* Hoechste Verzauberungsstufe.
+         Ausruestung          .4
+         Traenke und Speisen  .3  (dafuer gibt es kein .4-Rezept)
+         gar nicht verzauberbar  0
+       Die Null ist wichtig: die beiden T1-Gerichte Gegrillter Fisch und
+       Seegras-Salat haben kein Verzauberungsrezept. Gaeben sie hier 4
+       zurueck, zoege ein einziges davon die Stufenleiste der ganzen
+       Warengruppe Nahrung wieder auf .4 hoch. */
     enchMax: function (item) {
       if (item.re && item.re.length) return item.re.length;
-      return 4;
+      return AO.craft.enchantable(item) ? 4 : 0;
     },
 
     /* Das Rezept, das fuer diese Stufe wirklich gilt. */

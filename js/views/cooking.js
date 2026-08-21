@@ -8,7 +8,11 @@
     subtitle: 'Gerichte und Fischsoßen – Zutaten, Kosten und Gewinn',
     storeKey: 'cooking',
     itemLabel: 'Gericht',
-    ench: false,
+    /* Speisen lassen sich verzaubern: Grundrezept plus Fischsauce,
+       Stufen .1 bis .3. Die beiden T1-Gerichte (Gegrillter Fisch,
+       Seegras-Salat) haben kein Verzauberungsrezept - dort blendet
+       sich die Leiste von selbst aus. */
+    ench: true,
     quality: false,
     source: function () {
       /* Gerichte plus die Fischprodukte (Fischsossen, Seetang) - beides

@@ -16,7 +16,7 @@
   var SOURCES = {
     items:      { n: 'Ausrüstung', ench: true,  quality: true,  src: function () { return AO.data.items; } },
     refining:   { n: 'Refining',   ench: true,  quality: false, src: function () { return AO.data.refining; } },
-    food:       { n: 'Nahrung',    ench: false, quality: false, src: function () { return AO.data.consumables.filter(function (c) { return c.c === 'food'; }).concat(AO.data.fish || []); } },
+    food:       { n: 'Nahrung',    ench: true,  quality: false, src: function () { return AO.data.consumables.filter(function (c) { return c.c === 'food'; }).concat(AO.data.fish || []); } },
     potion:     { n: 'Tränke',     ench: true,  quality: false, src: function () { return AO.data.consumables.filter(function (c) { return c.c === 'potion'; }); } }
   };
 
