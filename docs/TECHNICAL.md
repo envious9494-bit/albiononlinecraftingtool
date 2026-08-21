@@ -330,6 +330,45 @@ views.**
   detail behind "More filters". Crafting Deals and the enchanting view
   previously had up to ten controls side by side.
 
+## What never comes back when crafting
+
+The return rate does not apply to everything. Until now the distinction hung on
+`shopcategory="artefacts"` – which covers artifact weapons, but by no means
+every ingredient that stays consumed in the game.
+
+The game data is more precise. Any ingredient of a recipe can carry:
+
+```xml
+<craftresource uniquename="T4_SKILLBOOK_STANDARD" count="1" maxreturnamount="0" />
+```
+
+That is the **Tome of Insight** in the Satchel of Insight – it does not come
+back. Evaluated across the whole dump:
+
+| | |
+|---|---|
+| Ingredients carrying the marker | 1,261 |
+| of those marked in **every** recipe | 1,112 |
+| of those marked only in some | 149 |
+
+Only the unambiguous ones were adopted. The 149 ambiguous ones are exclusively
+**transmutation recipes** (T4 fibre to T5 fibre, T4 fibre to T4.1 fibre) –
+which the toolkit does not carry at all. In ordinary refining, wood, ore,
+fibre, hide and stone of course still come back.
+
+**126 ingredients** had to be newly locked as a result:
+
+* the **Tome of Insight** (Satchel of Insight, all five tiers)
+* the **base armor** and the **Royal Sigils** of the Royal armor sets
+* the **cape blueprints** of the faction and artifact capes (70 of them),
+  along with the base cape
+* faction and mission tokens
+
+What that amounts to, using 100 × *Adept's Satchel of Insight* in Martlock at a
+36.7 % return rate: the tome costs 100 × 25,997 = **2,599,700** instead of a
+calculated 1,645,610. The calculator was previously understating the cost by
+**954,090 silver** – on a recipe whose material cost is 87 % that one tome.
+
 ## Refining: guild sales and every kind at once
 
 Refining is a volume business. Two things were missing for that.
@@ -650,8 +689,10 @@ not a crafting product, and the dump carries neither a value nor a recipe for
 them. They are entered but without a value; the calculator reports them
 explicitly as missing.
 
-They pay off immediately in Crafting Deals: *Expert's Royal Jacket* +134,128
-(42.6 %), *Adept's Undead Cape* +121,269 (86.9 %).
+They pay off immediately in Crafting Deals. Those figures are outdated now
+that the base armor and the cape blueprint are no longer made cheaper by the
+return rate – recalculated in Martlock, an *Adept's Undead Cape* now yields
++47,585 (22.3 %).
 
 ## Crafting Deals
 

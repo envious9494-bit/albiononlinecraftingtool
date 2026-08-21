@@ -338,6 +338,46 @@ Tabellenüberlauf in allen 16 Ansichten.**
   hinter „Mehr Filter". In den Craft-Chancen und der Aufwertung standen
   vorher bis zu zehn Bedienelemente nebeneinander.
 
+## Was beim Craften nie zurückkommt
+
+Die Rückgaberate gilt nicht für alles. Bisher hing die Unterscheidung an
+`shopcategory="artefacts"` – das trifft Artefaktwaffen, aber längst nicht
+jede Zutat, die im Spiel verbraucht bleibt.
+
+Die Spieldaten sagen es genauer. An jeder Zutat eines Rezepts kann stehen:
+
+```xml
+<craftresource uniquename="T4_SKILLBOOK_STANDARD" count="1" maxreturnamount="0" />
+```
+
+Das ist der **Foliant der Einsicht** in der Tasche der Einsicht – er kommt
+nicht zurück. Ausgewertet über den ganzen Dump:
+
+| | |
+|---|---|
+| Zutaten mit dem Merkmal | 1.261 |
+| davon **in jedem** Rezept so markiert | 1.112 |
+| davon nur in manchen | 149 |
+
+Nur die eindeutigen sind übernommen worden. Die 149 uneindeutigen sind
+ausschließlich **Transmutations-Rezepte** (T4-Faser zu T5-Faser, T4-Faser zu
+T4.1-Faser) – die führt das Toolkit gar nicht. Beim normalen Refining kommen
+Holz, Erz, Faser, Fell und Stein selbstverständlich weiterhin zurück.
+
+**126 Zutaten** waren dadurch neu zu sperren:
+
+* der **Foliant der Einsicht** (Tasche der Einsicht, alle fünf Stufen)
+* die **Basisrüstung** und die **Königlichen Siegel** der Royal-Rüstungen
+* die **Umhang-Blaupausen** der Fraktions- und Artefakt-Umhänge (70 Stück)
+  samt Basisumhang
+* Fraktions- und Missionsmarken
+
+Was das ausmacht, am Beispiel von 100 × *Adept's Satchel of Insight* in
+Martlock bei 36,7 % Rückgabe: der Foliant kostet 100 × 25.997 = **2.599.700**
+statt gerechneter 1.645.610. Der Rechner hat vorher **954.090 Silber**
+unterschlagen – bei einem Rezept, dessen Materialkosten zu 87 % aus genau
+diesem Foliant bestehen.
+
 ## Refining: Gildenverkauf und alle Sorten auf einmal
 
 Refining geht auf Masse. Zwei Dinge fehlten dafür.
@@ -662,8 +702,10 @@ Handwerkserzeugnis, und der Dump führt weder Wert noch Rezept dafür. Sie sind
 eingetragen, aber ohne Wert; der Rechner weist sie ausdrücklich als fehlend
 aus.
 
-In den Craft-Chancen tragen sie sofort: *Expert's Royal Jacket* +134.128
-(42,6 %), *Adept's Undead Cape* +121.269 (86,9 %).
+In den Craft-Chancen tragen sie sofort. Die Zahlen von damals sind
+überholt, seit die Basisrüstung und die Umhang-Blaupause nicht mehr über
+die Rückgaberate verbilligt werden – nachgerechnet in Martlock bringt ein
+*Adept's Undead Cape* jetzt +47.585 (22,3 %).
 
 ## Craft-Chancen
 
