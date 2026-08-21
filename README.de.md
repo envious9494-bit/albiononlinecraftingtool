@@ -77,6 +77,14 @@ auch ohne Farbe erkennbar.
 
 ![Kontrastfarben](docs/bilder/08-kontrastfarben.png)
 
+### Meldet sich, wenn es etwas Neues gibt
+
+Der Windows-Client sieht beim Start still nach, ob eine neuere Fassung
+vorliegt, und fragt dann einmal nach: *Jetzt herunterladen* · *Später* ·
+*Diese Fassung überspringen*. Es wird nur gefragt – geladen und installiert
+wird nichts ohne dich. Gibt es nichts Neues oder ist gerade kein Netz da,
+passiert gar nichts.
+
 ### Drei Sprachen
 
 Deutsch, Englisch, Spanisch. Die Item-Namen sind dabei **nicht übersetzt**,

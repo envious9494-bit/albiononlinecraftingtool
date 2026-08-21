@@ -1246,6 +1246,44 @@ Das Anwendungssymbol (`build/icon.ico`, sechs Größen von 16 bis 256 px) ist
 selbst gezeichnet – ein Amboss in Gold auf dunklem Schiefer. Die Item-Grafiken
 von Sandbox Interactive gehören ihnen und sind dafür nicht verwendet worden.
 
+## Meldung, wenn es etwas Neues gibt
+
+Der Windows-Client sieht **beim Start still nach**, ob eine neuere Fassung
+vorliegt. Gibt es nichts, merkt man nichts. Gibt es etwas, kommt ein Fenster
+mit drei Möglichkeiten: *Jetzt herunterladen* · *Später* · *Diese Fassung
+überspringen*.
+
+Bewusst wird nur **gefragt**, nichts geladen und nichts installiert. Ein Klick
+öffnet die Release-Seite im Browser, den Installer startet man wie immer
+selbst. Der Grund ist handfest: ein echtes Selbst-Update (`electron-updater`)
+prüft unter Windows die Signatur der heruntergeladenen Datei gegen die der
+laufenden. Da hier nichts signiert ist, müsste man diese Prüfung abschalten –
+eine Sicherheitsstufe weniger für einen Klick weniger. Das ist es nicht wert.
+
+Die Abfrage geht an die GitHub-Release-Schnittstelle, einmal, mit acht
+Sekunden Geduld. **Jeder Fehlschlag endet still** – kein Netz, GitHub nicht
+erreichbar, Antwort unverständlich: dann passiert nichts. Ein Fehlerfenster
+beim Start wäre schlimmer als eine verpasste Version.
+
+Was noch dazugehört:
+
+* Das Fenster spricht die Sprache der Oberfläche. Sie wird aus der Seite
+  abgefragt (`AO.i18n.lang()`); klappt das nicht, bleibt es bei Deutsch.
+* Wer eine Fassung überspringt, wird zu genau dieser nicht mehr gefragt. Das
+  merkt sich `update.json` in den Nutzerdaten.
+* Der Versionsvergleich rechnet mit Zahlen, nicht mit Text – sonst wäre
+  `1.10.0` älter als `1.9.0`. Vorabfassungen (`-beta`) lösen nichts aus.
+* Läuft nur in der installierten Fassung. Beim Entwickeln wäre es Lärm;
+  `AO_UPDATE_TEST=<version>` schaltet es zum Nachprüfen frei.
+
+Nachgemessen: mit vorgetäuschter Fassung 1.0.0 erscheint das Fenster mit
+„Albion Toolkit 1.0.1 ist da." und den drei Knöpfen; mit der echten Fassung
+erscheint es nicht; ein Fehlschlag der Abfrage hinterlässt keinen Absturz.
+
+Eine Einschränkung, die in der Natur der Sache liegt: **wer 1.0.1 oder älter
+hat, bekommt diese Meldung nicht** – dort steckt sie ja noch nicht drin. Diese
+eine Aktualisierung muss man von Hand holen.
+
 ## Was das Programm ins Netz schickt
 
 Nichts von dir. Ausgehend gehen nur:
@@ -1254,6 +1292,9 @@ Nichts von dir. Ausgehend gehen nur:
   nur auf Knopfdruck, nie von allein.
 * **Item-Bilder** vom offiziellen Renderer (`render.albiononline.com`).
 * **Schriften** von Google Fonts. Ohne Netz greifen die Ersatzschriften.
+* **Eine Zeile an die GitHub-Release-Schnittstelle** beim Start, um zu
+  erfahren, ob es eine neuere Fassung gibt. Gesendet wird dabei nichts
+  ausser der Anfrage selbst.
 
 Deine eigenen Preise, Einstellungen und die Darstellungswahl liegen im
 lokalen Speicher deines Rechners. Es gibt keine Anmeldung, kein Konto und

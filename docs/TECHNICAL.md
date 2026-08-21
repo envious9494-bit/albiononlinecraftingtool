@@ -1239,6 +1239,44 @@ The application icon (`build/icon.ico`, six sizes from 16 to 256 px) is drawn
 from scratch – an anvil in gold on dark slate. Sandbox Interactive's item
 graphics belong to them and were not used for it.
 
+## A notice when something new is out
+
+The Windows client **checks quietly at startup** whether a newer version
+exists. If there is nothing, you notice nothing. If there is, a dialog offers
+three choices: *Download now* · *Later* · *Skip this version*.
+
+Deliberately it only **asks** – nothing is downloaded and nothing is installed.
+One click opens the release page in your browser, and you run the installer
+yourself as before. The reason is concrete: a real self-update
+(`electron-updater`) verifies, on Windows, the signature of the downloaded file
+against that of the running one. Since nothing here is signed, that check would
+have to be switched off – one security level less for one click less. Not worth
+it.
+
+The query goes to the GitHub releases endpoint, once, with eight seconds of
+patience. **Every failure ends silently** – no network, GitHub unreachable,
+unparseable answer: then nothing happens. An error dialog at startup would be
+worse than a missed version.
+
+The rest of it:
+
+* The dialog speaks the language of the interface. It is read from the page
+  (`AO.i18n.lang()`); if that fails, German it is.
+* Skipping a version means you are not asked about that one again. `update.json`
+  in the user data remembers it.
+* The version comparison works on numbers, not text – otherwise `1.10.0` would
+  be older than `1.9.0`. Pre-releases (`-beta`) trigger nothing.
+* It only runs in the installed build. During development it would be noise;
+  `AO_UPDATE_TEST=<version>` enables it for verification.
+
+Measured: with a faked version 1.0.0 the dialog appears reading "Albion Toolkit
+1.0.1 ist da." with the three buttons; with the real version it does not
+appear; a failed query leaves no crash behind.
+
+One limitation in the nature of the thing: **anyone on 1.0.1 or older will not
+get this notice** – it is not in there yet. That one update has to be fetched
+by hand.
+
 ## What the program sends over the network
 
 Nothing of yours. Outbound there are only:
@@ -1248,6 +1286,8 @@ Nothing of yours. Outbound there are only:
 * **Item images** from the official renderer (`render.albiononline.com`).
 * **Fonts** from Google Fonts. Without a network connection the fallback fonts
   take over.
+* **One line to the GitHub releases endpoint** at startup, to find out whether
+  a newer version exists. Nothing is sent beyond the request itself.
 
 A Content Security Policy in `index.html` enforces exactly that list: no
 foreign script, no form submission, and connections only to those three hosts.

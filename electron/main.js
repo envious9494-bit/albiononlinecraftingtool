@@ -15,6 +15,7 @@
 const { app, BrowserWindow, shell, Menu } = require('electron');
 const path = require('node:path');
 const fs = require('node:fs');
+const update = require('./update');
 
 /* Fenstergroesse und -lage merken. Liegt in userData, nicht im Programm-
    ordner - sonst schriebe die Anwendung in ihr eigenes Installations-
@@ -113,7 +114,11 @@ function menueBauen() {
 
 app.whenReady().then(function () {
   Menu.setApplicationMenu(menueBauen());
-  fensterAufmachen();
+  const win = fensterAufmachen();
+
+  /* Still nachsehen, ob es eine neuere Fassung gibt. Meldet sich nur,
+     wenn es wirklich etwas Neues gibt - sonst merkt man nichts. */
+  update.pruefen(win);
 
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) fensterAufmachen();

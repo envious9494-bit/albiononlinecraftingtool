@@ -74,6 +74,13 @@ relying on colour at all.
 
 ![Contrast colours](docs/bilder/08-kontrastfarben.png)
 
+### It tells you when something new is out
+
+The Windows client checks quietly at startup whether a newer version exists and
+then asks once: *Download now* · *Later* · *Skip this version*. It only asks –
+nothing is downloaded or installed without you. If there is nothing new, or no
+network right now, nothing happens at all.
+
 ### Three languages
 
 German, English, Spanish. The item names are **not translated** – they are
