@@ -17,8 +17,11 @@
     source: function () {
       /* Gerichte plus die Fischprodukte (Fischsossen, Seetang) - beides
          entsteht in der Kueche. */
-      return AO.data.consumables.filter(function (c) { return c.c === 'food'; })
-        .concat(AO.data.fish || []);
+      /* Gerichte, dazu die Verarbeitungsprodukte der Kueche (Schnaps,
+         Butter, Brot, Mehl) und die Fischsaucen. */
+      return AO.data.consumables.filter(function (c) {
+        return c.c === 'food' || c.c === 'farm';
+      }).concat(AO.data.fish || []);
     }
   });
 })();

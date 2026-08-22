@@ -1131,6 +1131,79 @@ rather than inventing a number.
 Not enchantable and therefore not in the selection: **tools** as well as **T2
 and T3 equipment** – the game has no enchantment for those at all.
 
+## The free calculator
+
+Every other calculator takes the recipe off your hands. This one takes nothing
+off your hands – and that is the point: you enter **what you buy**, **what
+comes out of it** and **which fees** you apply.
+
+What it is for: a trade with no crafting at all, a hideout with a fee that is
+written down nowhere, an arrangement with your guild, a recipe the game has
+just changed – anything that fits no stored recipe.
+
+| Adjustable | |
+|---|---|
+| Type | *Crafting* (with return rate and station fee) or *Trading only* |
+| Return rate | free, with the known values as buttons beside it |
+| Fee | silver per craft, exactly as the station shows it |
+| Tax | free, 4 % by default |
+| Order fee | free, switchable per side |
+| Guild sale | tax and order fee do not apply |
+
+It stays convenient nonetheless: **every row can carry a real item**. Name,
+image and – at the push of a button – the market price then come by
+themselves, while numbers you typed in stay as they are. If you would rather
+type, just type a name.
+
+For each purchase row you can also decide whether the return rate applies to
+it. An artifact never comes back; that is one click.
+
+At the bottom stand costs, net proceeds, profit, margin – and the **break-even
+price** per unit. Rows without a price are counted and named explicitly rather
+than slipping through as zero.
+
+Verified on a sheet with 100 crafts (16 bars at 500, 8 leather at 400, 1
+artifact at 20,000 with no return, return rate 36.7 %, fee 1,500, sale
+60,000):
+
+| | by hand | in the calculator |
+|---|---|---|
+| Purchase | 2,708,960 | 2,708,960 |
+| Total cost | 2,858,960 | 2,858,960 |
+| Profit | 2,751,040 | **2,751,040** |
+
+With a guild sale the profit rises by exactly 390,000 – the 6.5 % of tax and
+order fee on 6,000,000 of revenue. In trading mode the return rate and station
+fee fall away, and the purchase rises to the full 3,120,000.
+
+The sheet lives in the browser storage and survives a restart.
+
+## The kitchen's processing products
+
+**Potato Schnapps** and **Pumpkin Moonshine** were missing as craftable items,
+although they had long been in the data as ingredients. The reason lies in the
+extraction again: these products sit in the dump not as `<consumableitem>` but
+as `<simpleitem>` with `shopsubcategory1="farmingproducts"`.
+
+All 14 have been added:
+
+| | |
+|---|---|
+| Spirits | Potato Schnapps (T6), Corn Hooch (T7), Pumpkin Moonshine (T8) |
+| Butter | goat's, sheep's, cow's butter (T4/T6/T8) |
+| Grain | flour (T3), bread (T4) |
+| Meat | chicken through cow (T3–T8) |
+
+They appear in the cooking calculator under the new category **Processing**.
+Along with them came six materials that were still missing: the live animals
+(chicken, goat, goose, sheep, pig, cow) that the raw meat comes from. They sit
+in the dump only as a reference without a tier of their own – that is derived
+from the id.
+
+There is **no enchantment for these products**: the dump carries none, and none
+is traded on the market either (checked for spirits, butter and bread – zero
+offers on `@1`).
+
 ## Batch calculator
 
 For when you want to put a whole category to the test at once – and do not

@@ -25,7 +25,9 @@
       { id: 'crafting', icon: '\u2694', label: 'Crafting' },
       { id: 'cooking',  icon: '\u2668', label: 'Kochen' },
       { id: 'potion',   icon: '\u2697', label: 'Tr\u00e4nke' },
-      { id: 'batch',    icon: '\u25a6', label: 'Serien' }
+      { id: 'batch',    icon: '\u25a6', label: 'Serien' },
+      { id: 'sheet',    icon: '\u270e', label: 'Freier Rechner',
+        hint: 'Eigene Positionen und Abgaben' }
     ]},
     { group: 'Werkzeuge', items: [
       { id: 'profit',   icon: '\u2197', label: 'Gewinn' },

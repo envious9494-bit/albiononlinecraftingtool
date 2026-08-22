@@ -1156,6 +1156,79 @@ die Gewinnangabe, statt eine Zahl zu erfinden.
 Nicht aufwertbar und deshalb nicht in der Auswahl: **Werkzeuge** sowie
 **T2- und T3-Ausrüstung** – die haben im Spiel gar keine Verzauberung.
 
+## Der freie Rechner
+
+Alle anderen Rechner nehmen dir das Rezept ab. Dieser nimmt dir nichts ab –
+und genau darum geht es: du trägst ein, **was du kaufst**, **was dabei
+herauskommt** und **welche Abgaben** du ansetzt.
+
+Wofür das gedacht ist: ein Handel ganz ohne Herstellung, ein Hideout mit einer
+Gebühr, die nirgends steht, eine Abmachung mit der Gilde, ein Rezept, das das
+Spiel gerade geändert hat – alles, was in kein hinterlegtes Rezept passt.
+
+| Einstellbar | |
+|---|---|
+| Art | *Herstellen* (mit Rückgabe und Stationsgebühr) oder *Nur handeln* |
+| Rückgabe | frei, die bekannten Werte als Knöpfe daneben |
+| Gebühr | Silber je Craft, so wie die Station sie anzeigt |
+| Steuer | frei, Vorgabe 4 % |
+| Ordergebühr | frei, je Seite ein- und ausschaltbar |
+| Gildenverkauf | Steuer und Ordergebühr entfallen |
+
+Bequem bleibt es trotzdem: **jede Zeile kann einen echten Gegenstand tragen**.
+Dann kommen Name, Bild und auf Knopfdruck der Marktpreis von selbst – von Hand
+eingetragene Zahlen bleiben dabei stehen. Wer lieber tippt, tippt einfach einen
+Namen hin.
+
+Je Einkaufszeile lässt sich außerdem festlegen, ob die Rückgaberate darauf
+wirkt. Ein Artefakt kommt nie zurück; das ist ein Klick.
+
+Unten stehen Kosten, Netto-Erlös, Gewinn, Marge – und der **Break-even**: ab
+welchem Preis je Stück man bei null ist. Zeilen ohne Preis werden gezählt und
+ausdrücklich benannt, statt als Null durchzurutschen.
+
+Nachgerechnet an einem Blatt mit 100 Crafts (16 Barren à 500, 8 Leder à 400,
+1 Artefakt à 20.000 ohne Rücklauf, Rückgabe 36,7 %, Gebühr 1.500, Verkauf
+60.000):
+
+| | von Hand | im Rechner |
+|---|---|---|
+| Einkauf | 2.708.960 | 2.708.960 |
+| Gesamtkosten | 2.858.960 | 2.858.960 |
+| Gewinn | 2.751.040 | **2.751.040** |
+
+Mit Gildenverkauf steigt der Gewinn um genau 390.000 – die 6,5 % aus Steuer
+und Ordergebühr auf 6.000.000 Umsatz. Im Handelsmodus fallen Rückgabe und
+Stationsgebühr weg, der Einkauf steigt auf die vollen 3.120.000.
+
+Das Blatt liegt im Browserspeicher und übersteht den Neustart.
+
+## Die Verarbeitungsprodukte der Küche
+
+**Kartoffelschnaps** und **Kürbisschnaps** fehlten als herstellbare
+Gegenstände, obwohl sie als Zutat längst im Bestand standen. Der Grund liegt
+wieder im Auslesevorgang: diese Erzeugnisse stehen im Dump nicht als
+`<consumableitem>`, sondern als `<simpleitem>` mit
+`shopsubcategory1="farmingproducts"`.
+
+Nachgetragen sind alle 14:
+
+| | |
+|---|---|
+| Schnaps | Kartoffelschnaps (T6), Klarer Fusel (T7), Kürbisschnaps (T8) |
+| Butter | Ziegen-, Schafs-, Kuhmilchbutter (T4/T6/T8) |
+| Getreide | Mehl (T3), Brot (T4) |
+| Fleisch | Huhn bis Rind (T3–T8) |
+
+Sie stehen im Koch-Rechner unter der neuen Kategorie **Verarbeitung**. Dazu
+kamen sechs Materialien, die noch fehlten: die lebenden Tiere (Huhn, Ziege,
+Gans, Schaf, Schwein, Kuh), aus denen das rohe Fleisch entsteht. Sie stehen im
+Dump nur als Verweis ohne eigene Stufe – die ist aus der Kennung abgeleitet.
+
+Eine **Verzauberung gibt es für diese Erzeugnisse nicht**: weder führt der Dump
+eine, noch wird am Markt eine gehandelt (geprüft für Schnaps, Butter und Brot –
+null Angebote auf `@1`).
+
 ## Serien-Rechner
 
 Für den Fall, dass man einer ganzen Kategorie auf einmal auf den Zahn fühlen

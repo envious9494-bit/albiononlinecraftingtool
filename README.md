@@ -51,6 +51,11 @@ focus, item value, fame – sixteen views, all sharing the same settings for
 city, fee, tax and premium. Dishes and potions can also be calculated
 enchanted (.1 to .3).
 
+The **free calculator** is for anything that fits no recipe: you enter what
+you buy and what comes out of it, and set tax, fees, return rate and guild
+sales yourself. Every row can carry a real item – the market price is then
+one button away.
+
 The **refining calculator** shows every tier of a family – leather, say –
 side by side, with the cheapest place to buy and the best place to sell. And
 because refining is a volume business, you can **sell to your guild** there:
