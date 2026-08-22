@@ -728,5 +728,8 @@ AO.data.sprachen = {
   "{n}Preise übernommen": { en: "{n}prices adopted", es: "{n}precios adoptados" },
   "Keine Zeile trägt einen Gegenstand": { en: "No row carries an item", es: "Ninguna fila lleva un objeto" },
   "Für diese Stadt liegt kein Preis vor": { en: "No price available for this city", es: "No hay precio para esta ciudad" },
-  "Verarbeitung": { en: "Processing", es: "Procesado" }
+  "Verarbeitung": { en: "Processing", es: "Procesado" },
+  "ja": { en: "yes", es: "sí" },
+  "nein": { en: "no", es: "no" },
+  "Rückgabe": { en: "Return", es: "Retorno" }
 };

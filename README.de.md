@@ -58,6 +58,8 @@ ein, was du kaufst und was dabei herauskommt, und bestimmst Steuer,
 Gebühren, Rückgabe und Gildenverkauf selbst. Jede Zeile kann einen echten
 Gegenstand tragen – dann kommt der Marktpreis auf Knopfdruck.
 
+![Freier Rechner](docs/bilder/10-freier-rechner.png)
+
 Der **Refining-Rechner** zeigt zu jeder Familie – etwa Leder – alle Stufen
 nebeneinander, samt günstigstem Einkaufs- und bestem Verkaufsort. Und weil
 Refining auf Masse geht, lässt sich dort auch **an die Gilde verkaufen**:

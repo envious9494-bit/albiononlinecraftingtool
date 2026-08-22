@@ -175,10 +175,11 @@
               '<div class="right"><button class="btn sm" data-x="addEin">+ Zeile</button></div></div>' +
             '<div class="tablewrap" style="border:none">' +
               '<table class="data"><thead><tr>' +
-                '<th style="min-width:220px">Gegenstand</th>' +
+                '<th style="min-width:170px">Gegenstand</th>' +
                 '<th title="Menge je Craft bzw. je Einheit">Menge</th>' +
                 '<th>Preis je Stück</th>' +
                 '<th title="Was nach Abzug der Rückgabe wirklich zu kaufen ist">einzukaufen</th>' +
+                '<th title="Kommt beim Herstellen nichts davon zurück? Dann anklicken.">Rückgabe</th>' +
                 '<th>Kosten</th><th></th>' +
               '</tr></thead><tbody data-x="einRows"></tbody></table></div>' +
           '</div>' +
@@ -188,7 +189,7 @@
               '<div class="right"><button class="btn sm" data-x="addAus">+ Zeile</button></div></div>' +
             '<div class="tablewrap" style="border:none">' +
               '<table class="data"><thead><tr>' +
-                '<th style="min-width:220px">Gegenstand</th>' +
+                '<th style="min-width:170px">Gegenstand</th>' +
                 '<th>Menge</th><th>Preis je Stück</th>' +
                 '<th>Stück gesamt</th><th>Umsatz</th><th></th>' +
               '</tr></thead><tbody data-x="ausRows"></tbody></table></div>' +
@@ -344,7 +345,8 @@
           opt.push('<option value="' + F.esc(x.id) + '"' + (x.id === z.id ? ' selected' : '') +
                    '>' + F.esc(x.n || x.id) + '</option>');
         });
-        return '<select class="mini" data-feld="wahl" data-seite="' + seite + '" data-i="' + i + '">' +
+        return '<select class="mini" style="max-width:170px" data-feld="wahl" data-seite="' +
+          seite + '" data-i="' + i + '">' +
           opt.join('') + '</select>';
       }
 
@@ -354,21 +356,21 @@
           var kopf = '<div class="itemcell">' +
             (z.id ? F.img(z.id, 40, z.name || z.id) : '') +
             '<div class="nm">' +
-              '<input class="txt" data-feld="name" data-seite="' + seite + '" data-i="' + i +
+              '<input class="txt" style="max-width:170px" data-feld="name" data-seite="' + seite + '" data-i="' + i +
                 '" value="' + F.esc(z.name || '') + '" placeholder="Name eintragen">' +
               wahlFeld(seite, i, z) +
             '</div></div>';
-          var mitte = '<td><input class="num" data-feld="menge" data-seite="' + seite +
+          var mitte = '<td><input class="num" style="max-width:80px" data-feld="menge" data-seite="' + seite +
               '" data-i="' + i + '" value="' + F.esc(String(z.menge).replace('.', ',')) + '"></td>' +
-            '<td><input class="num" data-feld="preis" data-seite="' + seite + '" data-i="' + i +
+            '<td><input class="num" style="max-width:110px" data-feld="preis" data-seite="' + seite + '" data-i="' + i +
               '" value="' + (z.preis == null ? '' : F.esc(String(z.preis).replace('.', ','))) +
               '" placeholder="—"></td>';
           if (seite === 'ein') {
             return '<tr><td>' + kopf + '</td>' + mitte +
-              '<td>' + F.s(x.echt) +
-                '<button class="chip sm" data-tun="ruecklauf" data-seite="ein" data-i="' + i +
+              '<td>' + F.s(x.echt) + '</td>' +
+              '<td><button class="chip sm" data-tun="ruecklauf" data-seite="ein" data-i="' + i +
                 '" title="Kommt beim Herstellen nichts davon zurück? Dann anklicken.">' +
-                (z.keinRuecklauf ? 'kein Rücklauf' : 'mit Rückgabe') + '</button></td>' +
+                (z.keinRuecklauf ? 'nein' : 'ja') + '</button></td>' +
               '<td>' + F.s(x.kosten) + '</td>' +
               '<td><button class="chip sm" data-tun="weg" data-seite="ein" data-i="' + i + '">✕</button></td></tr>';
           }

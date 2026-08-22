@@ -56,6 +56,8 @@ you buy and what comes out of it, and set tax, fees, return rate and guild
 sales yourself. Every row can carry a real item – the market price is then
 one button away.
 
+![Free calculator](docs/bilder/10-freier-rechner.png)
+
 The **refining calculator** shows every tier of a family – leather, say –
 side by side, with the cheapest place to buy and the best place to sell. And
 because refining is a volume business, you can **sell to your guild** there:
