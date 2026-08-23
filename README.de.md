@@ -60,6 +60,11 @@ Gegenstand tragen – dann kommt der Marktpreis auf Knopfdruck.
 
 ![Freier Rechner](docs/bilder/10-freier-rechner.png)
 
+Den Namen tippst du selbst ein – oder du drückst **wählen** und suchst im
+gesamten Bestand, rund 2.900 Einträge, gefiltert während du tippst.
+
+![Gegenstand wählen](docs/bilder/11-sucher.png)
+
 Der **Refining-Rechner** zeigt zu jeder Familie – etwa Leder – alle Stufen
 nebeneinander, samt günstigstem Einkaufs- und bestem Verkaufsort. Und weil
 Refining auf Masse geht, lässt sich dort auch **an die Gilde verkaufen**:

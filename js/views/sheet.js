@@ -7,9 +7,18 @@
    eine Abmachung mit der Gilde, ein Rezept, das das Spiel gerade
    geaendert hat.
 
-   Bequem bleibt es trotzdem: jede Zeile kann einen echten Gegenstand
-   aus dem Bestand tragen, dann kommen Name, Bild und Marktpreis von
-   selbst. Wer lieber tippt, tippt.
+   Zwei Dinge sind hier wichtiger als anderswo:
+
+   1. Waehrend getippt wird, werden die Zeilen NICHT neu gebaut. Sonst
+      verschwindet das Feld unter den Fingern - nach einem Buchstaben ist
+      Schluss. Neu gezeichnet wird nur, wenn sich die Zeilen wirklich
+      aendern (hinzufuegen, entfernen, Gegenstand waehlen); beim Tippen
+      werden ausschliesslich die errechneten Zellen nachgetragen.
+
+   2. Der Gegenstand wird ueber eine Suche gewaehlt, nicht ueber eine
+      Auswahlliste. Der Bestand hat rund 2.900 Eintraege; als <select> je
+      Zeile waeren das bei vier Zeilen ueber elftausend Elemente - bei
+      jedem Neuzeichnen.
 
    Alles Eingetragene liegt im Browserspeicher und uebersteht den
    Neustart.
@@ -18,14 +27,13 @@
   "use strict";
   var F = AO.fmt, U = AO.ui;
 
-  /* Eine leere Zeile. `id` bleibt leer, solange nichts gewaehlt ist. */
   function zeile(art) {
     return { id: '', name: '', menge: art === 'aus' ? 1 : 10, preis: null };
   }
 
   var S = AO.store.bind('sheet', {
     modus: 'craft',              /* craft | handel */
-    stueck: 100,                 /* Crafts bzw. Handelsmenge */
+    stueck: 100,
     ein: [zeile('ein')],
     aus: [zeile('aus')],
     ruecklauf: 15.2,
@@ -56,9 +64,6 @@
     var einZeilen = S.ein.map(function (z) {
       var p = zahl(z.preis, null);
       var roh = Math.max(0, zahl(z.menge, 0)) * n;
-      /* Die Rueckgabe wirkt nur auf Material, das man herstellt. Wer
-         "kein Rücklauf" ankreuzt, zahlt die volle Menge - so wie bei
-         Artefakten im Spiel. */
       var echt = z.keinRuecklauf ? roh : roh * (1 - r);
       if (p == null) fehlt.push(z.name || z.id || 'Zeile ohne Namen');
       var kosten = echt * (p || 0);
@@ -88,8 +93,6 @@
     var gewinn = netto - kosten;
 
     var stueckAus = ausZeilen.reduce(function (a, x) { return a + x.menge; }, 0);
-    /* Welchen Preis muesste das Erzeugnis bringen, damit nichts uebrig
-       bleibt und nichts fehlt? */
     var abzug = 1 - (S.gilde ? 0 : (zahl(S.steuer, 0) / 100)) -
                 ((S.gilde || !S.verkaufsorder) ? 0 : zahl(S.ordergebuehr, 0) / 100);
     var breakEven = (stueckAus > 0 && abzug > 0) ? kosten / abzug / stueckAus : NaN;
@@ -122,7 +125,7 @@
       '</div>' +
 
       '<div class="split">' +
-        '<div class="side">' +
+        '<div class="card">' +
           '<div class="fieldset">' +
             '<h4>Art der Rechnung</h4>' +
             '<div class="field stack"><div data-x="modusSeg"></div>' +
@@ -169,13 +172,26 @@
           '</div>' +
         '</div>' +
 
-        '<div class="main">' +
+        '<div>' +
+          /* Der Sucher liegt ueber den Tabellen und gehoert immer genau
+             einer Zeile - deshalb einmal im Baum statt einmal je Zeile. */
+          '<div class="card" data-x="pickBox" hidden style="margin-bottom:var(--s4)">' +
+            '<div class="card-head"><h3 data-x="pickTitel">Gegenstand wählen</h3>' +
+              '<div class="right"><button class="btn sm" data-x="pickZu">Schließen</button></div></div>' +
+            '<div class="card-body tight">' +
+              '<input data-x="pickSuche" placeholder="Name oder Kennung eintippen…" ' +
+                'autocomplete="off" spellcheck="false" style="width:100%;max-width:420px">' +
+              '<div class="picker-list" data-x="pickListe" style="position:static;' +
+                'max-height:340px;margin-top:var(--s3)"></div>' +
+            '</div>' +
+          '</div>' +
+
           '<div class="card">' +
             '<div class="card-head"><h3>Das kaufst du ein</h3>' +
               '<div class="right"><button class="btn sm" data-x="addEin">+ Zeile</button></div></div>' +
             '<div class="tablewrap" style="border:none">' +
               '<table class="data"><thead><tr>' +
-                '<th style="min-width:170px">Gegenstand</th>' +
+                '<th style="min-width:216px">Gegenstand</th>' +
                 '<th title="Menge je Craft bzw. je Einheit">Menge</th>' +
                 '<th>Preis je Stück</th>' +
                 '<th title="Was nach Abzug der Rückgabe wirklich zu kaufen ist">einzukaufen</th>' +
@@ -189,13 +205,13 @@
               '<div class="right"><button class="btn sm" data-x="addAus">+ Zeile</button></div></div>' +
             '<div class="tablewrap" style="border:none">' +
               '<table class="data"><thead><tr>' +
-                '<th style="min-width:170px">Gegenstand</th>' +
+                '<th style="min-width:216px">Gegenstand</th>' +
                 '<th>Menge</th><th>Preis je Stück</th>' +
                 '<th>Stück gesamt</th><th>Umsatz</th><th></th>' +
               '</tr></thead><tbody data-x="ausRows"></tbody></table></div>' +
           '</div>' +
 
-          '<div class="grid two" style="margin-top:var(--s4)">' +
+          '<div class="grid cols-2" style="margin-top:var(--s4)">' +
             '<div class="card"><div class="card-head"><h3>Kosten</h3></div>' +
               '<div class="card-body" data-x="kostenBox"></div></div>' +
             '<div class="card"><div class="card-head"><h3>Erlös &amp; Gewinn</h3></div>' +
@@ -221,45 +237,50 @@
         .map(function (r) { return { v: String(r.rate), n: F.n1(r.rate) + ' %' }; }), '');
       U.fill(el.stadt, AO.data.cities.map(function (c) { return { v: c, n: F.ort(c) }; }), S.stadt);
 
+      /* --- Einstellungen links ---------------------------------------- */
       ['stueck', 'ruecklauf', 'gebuehr', 'steuer', 'ordergebuehr'].forEach(function (k) {
         el[k].value = String(S[k]).replace('.', ',');
-        el[k].addEventListener('input', U.debounce(function () {
-          S[k] = zahl(el[k].value, 0); S.$save(); render();
-        }, 200));
+        el[k].addEventListener('input', function () {
+          S[k] = zahl(el[k].value, 0); S.$save(); aktualisiere();
+        });
       });
       ['kauforder', 'verkaufsorder', 'gilde'].forEach(function (k) {
         el[k].checked = !!S[k];
         el[k].addEventListener('change', function () {
-          S[k] = el[k].checked; S.$save(); render();
+          S[k] = el[k].checked; S.$save(); syncSeite(); aktualisiere();
         });
       });
 
       el.modusSeg.addEventListener('click', function (e) {
         var b = e.target.closest('button'); if (!b) return;
         S.modus = b.dataset.v; S.$save();
-        U.segSet(el.modusSeg.firstChild, b.dataset.v); render();
+        U.segSet(el.modusSeg.firstChild, b.dataset.v);
+        syncSeite(); zeichneZeilen();
       });
       el.rrSeg.addEventListener('click', function (e) {
         var b = e.target.closest('button'); if (!b) return;
         S.ruecklauf = zahl(b.dataset.v, 0); S.$save();
         el.ruecklauf.value = String(S.ruecklauf).replace('.', ',');
-        render();
+        aktualisiere();
       });
       el.stadt.addEventListener('change', function () { S.stadt = el.stadt.value; S.$save(); });
 
-      el.addEin.addEventListener('click', function () { S.ein.push(zeile('ein')); S.$save(); render(); });
-      el.addAus.addEventListener('click', function () { S.aus.push(zeile('aus')); S.$save(); render(); });
+      el.addEin.addEventListener('click', function () { S.ein.push(zeile('ein')); S.$save(); zeichneZeilen(); });
+      el.addAus.addEventListener('click', function () { S.aus.push(zeile('aus')); S.$save(); zeichneZeilen(); });
+      el.load.addEventListener('click', preiseHolen);
 
-      /* Zeilen bedienen - ein Zuhoerer fuer beide Tabellen. */
+      /* --- Tippen in den Zeilen ----------------------------------------
+         Hier wird bewusst NICHT neu gezeichnet: das Feld unter den
+         Fingern bleibt stehen, nur die errechneten Zellen laufen mit. */
       root.addEventListener('input', function (e) {
         var t = e.target;
-        var seite = t.dataset && t.dataset.seite, i = t.dataset && +t.dataset.i;
-        if (!seite || !isFinite(i)) return;
-        var z = S[seite][i]; if (!z) return;
+        if (!t.dataset || !t.dataset.seite || t.dataset.feld === undefined) return;
+        var z = S[t.dataset.seite][+t.dataset.i]; if (!z) return;
         if (t.dataset.feld === 'menge') z.menge = zahl(t.value, 0);
-        if (t.dataset.feld === 'preis') z.preis = t.value.trim() === '' ? null : zahl(t.value, 0);
-        if (t.dataset.feld === 'name') { z.name = t.value; z.id = ''; }
-        S.$save(); rechnenUndZeigen();
+        else if (t.dataset.feld === 'preis') z.preis = t.value.trim() === '' ? null : zahl(t.value, 0);
+        else if (t.dataset.feld === 'name') { z.name = t.value; z.id = ''; }
+        S.$save();
+        aktualisiere();
       });
 
       root.addEventListener('click', function (e) {
@@ -268,45 +289,88 @@
         if (b.dataset.tun === 'weg') {
           S[seite].splice(i, 1);
           if (!S[seite].length) S[seite].push(zeile(seite === 'aus' ? 'aus' : 'ein'));
-          S.$save(); render();
-        }
-        if (b.dataset.tun === 'ruecklauf') {
-          var z = S[seite][i];
-          z.keinRuecklauf = !z.keinRuecklauf; S.$save(); render();
+          S.$save(); zeichneZeilen();
+        } else if (b.dataset.tun === 'ruecklauf') {
+          var z = S[seite][i]; z.keinRuecklauf = !z.keinRuecklauf; S.$save(); zeichneZeilen();
+        } else if (b.dataset.tun === 'waehlen') {
+          pickerAuf(seite, i);
         }
       });
 
-      /* Gegenstand waehlen: eine schlichte Liste ueber alle Bestaende. */
-      root.addEventListener('change', function (e) {
-        var t = e.target;
-        if (!t.dataset || t.dataset.feld !== 'wahl') return;
-        var z = S[t.dataset.seite][+t.dataset.i]; if (!z) return;
-        z.id = t.value;
-        var it = alleGegenstaende().filter(function (x) { return x.id === t.value; })[0];
-        z.name = it ? it.n : '';
-        S.$save(); render();
-      });
-
-      el.load.addEventListener('click', preiseHolen);
-      document.addEventListener('ao:server', function () { if (document.contains(root)) render(); });
-      U.onPrices(root, render);
-
-      render();
-
-      /* ---------------------------------------------------------------- */
+      /* --- Sucher ------------------------------------------------------ */
+      var PICK = null;                 /* { seite, i } */
       var KATALOG = null;
-      function alleGegenstaende() {
+
+      function katalog() {
         if (KATALOG) return KATALOG;
         KATALOG = [];
         ['items', 'consumables', 'refining', 'fish'].forEach(function (k) {
-          (AO.data[k] || []).forEach(function (o) { KATALOG.push({ id: o.id, n: o.n }); });
+          (AO.data[k] || []).forEach(function (o) { KATALOG.push({ id: o.id, n: o.n, t: o.t }); });
         });
         var m = AO.data.materials || {};
-        Object.keys(m).forEach(function (k) { KATALOG.push({ id: k, n: m[k].n }); });
-        KATALOG.sort(function (a, b) { return (a.n || '').localeCompare(b.n || '', 'de'); });
+        Object.keys(m).forEach(function (k) { KATALOG.push({ id: k, n: m[k].n, t: m[k].t }); });
         return KATALOG;
       }
 
+      function pickerAuf(seite, i) {
+        PICK = { seite: seite, i: i };
+        var z = S[seite][i];
+        el.pickBox.hidden = false;
+        el.pickTitel.textContent = 'Gegenstand wählen';
+        el.pickSuche.value = z && z.name ? z.name : '';
+        pickerListe();
+        el.pickSuche.focus();
+        el.pickSuche.select();
+      }
+
+      function pickerZu() { PICK = null; el.pickBox.hidden = true; }
+      el.pickZu.addEventListener('click', pickerZu);
+
+      el.pickSuche.addEventListener('input', U.debounce(pickerListe, 120));
+      el.pickSuche.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') pickerZu();
+      });
+
+      function pickerListe() {
+        var term = el.pickSuche.value.trim().toLowerCase();
+        var treffer = katalog();
+        if (term) {
+          treffer = treffer.filter(function (x) {
+            return (x.n || '').toLowerCase().indexOf(term) >= 0 ||
+                   x.id.toLowerCase().indexOf(term) >= 0;
+          });
+        }
+        var gesamt = treffer.length;
+        treffer = treffer.slice(0, 40);
+        el.pickListe.innerHTML = treffer.length
+          ? treffer.map(function (x) {
+              return '<button data-pick="' + F.esc(x.id) + '">' + F.img(x.id, 40, x.n) +
+                '<span class="nm">' + F.esc(x.n || x.id) + '</span>' +
+                '<span class="meta">' + F.esc(x.id) + '</span></button>';
+            }).join('') +
+            (gesamt > 40 ? '<div class="t-empty">… und ' + F.q(gesamt - 40) +
+              ' weitere. Tipp mehr, dann wird die Liste kürzer.</div>' : '')
+          : '<div class="t-empty">Nichts gefunden</div>';
+      }
+
+      el.pickListe.addEventListener('click', function (e) {
+        var b = e.target.closest('[data-pick]'); if (!b || !PICK) return;
+        var z = S[PICK.seite][PICK.i]; if (!z) return;
+        z.id = b.dataset.pick;
+        var x = katalog().filter(function (y) { return y.id === z.id; })[0];
+        z.name = x ? (x.n || z.id) : z.id;
+        S.$save();
+        pickerZu();
+        zeichneZeilen();
+      });
+
+      document.addEventListener('ao:server', function () { if (document.contains(root)) zeichneZeilen(); });
+      U.onPrices(root, aktualisiere);
+
+      syncSeite();
+      zeichneZeilen();
+
+      /* ---------------------------------------------------------------- */
       function preiseHolen() {
         var ids = {};
         ['ein', 'aus'].forEach(function (seite) {
@@ -335,49 +399,81 @@
           })
           .catch(function (err) { U.toast('Laden fehlgeschlagen: ' + err.message, 'err'); })
           .then(function () {
-            el.load.classList.remove('loading'); el.load.disabled = false; render();
+            el.load.classList.remove('loading'); el.load.disabled = false;
+            zeichneZeilen();
           });
       }
 
-      function wahlFeld(seite, i, z) {
-        var opt = ['<option value="">– eigener Text –</option>'];
-        alleGegenstaende().forEach(function (x) {
-          opt.push('<option value="' + F.esc(x.id) + '"' + (x.id === z.id ? ' selected' : '') +
-                   '>' + F.esc(x.n || x.id) + '</option>');
-        });
-        return '<select class="mini" style="max-width:170px" data-feld="wahl" data-seite="' +
-          seite + '" data-i="' + i + '">' +
-          opt.join('') + '</select>';
+      function nameZelle(seite, i, z) {
+        /* flex:none an Bild und Knopf - sonst quetscht die enge Spalte
+           die Beschriftung des Knopfes zu "wäh" zusammen. */
+        return '<div style="display:flex;align-items:center;gap:var(--s2)">' +
+          (z.id ? '<span style="flex:none;display:flex">' +
+                    F.img(z.id, 40, z.name || z.id) + '</span>' : '') +
+          '<input style="min-width:0;width:100%;max-width:150px" data-feld="name" data-seite="' + seite +
+            '" data-i="' + i + '" value="' + F.esc(z.name || '') + '" placeholder="Name eintragen">' +
+          '<button class="btn sm ghost" style="flex:none;white-space:nowrap" data-tun="waehlen" ' +
+            'data-seite="' + seite + '" data-i="' + i +
+            '" title="Einen Gegenstand aus dem Bestand suchen">wählen</button>' +
+          '</div>';
       }
 
-      function zeilenHtml(seite, liste, d) {
-        return liste.map(function (x, i) {
+      /* Baut die Zeilen neu. Nur aufrufen, wenn sich die Zeilen wirklich
+         aendern - beim Tippen wuerde das Feld unter den Fingern
+         verschwinden. */
+      function zeichneZeilen() {
+        var d = rechne();
+        el.einRows.innerHTML = d.einZeilen.map(function (x, i) {
           var z = x.z;
-          var kopf = '<div class="itemcell">' +
-            (z.id ? F.img(z.id, 40, z.name || z.id) : '') +
-            '<div class="nm">' +
-              '<input class="txt" style="max-width:170px" data-feld="name" data-seite="' + seite + '" data-i="' + i +
-                '" value="' + F.esc(z.name || '') + '" placeholder="Name eintragen">' +
-              wahlFeld(seite, i, z) +
-            '</div></div>';
-          var mitte = '<td><input class="num" style="max-width:80px" data-feld="menge" data-seite="' + seite +
-              '" data-i="' + i + '" value="' + F.esc(String(z.menge).replace('.', ',')) + '"></td>' +
-            '<td><input class="num" style="max-width:110px" data-feld="preis" data-seite="' + seite + '" data-i="' + i +
+          return '<tr>' +
+            '<td>' + nameZelle('ein', i, z) + '</td>' +
+            '<td><input class="num" style="max-width:74px" data-feld="menge" data-seite="ein" data-i="' + i +
+              '" value="' + F.esc(String(z.menge).replace('.', ',')) + '"></td>' +
+            '<td><input class="num" style="max-width:104px" data-feld="preis" data-seite="ein" data-i="' + i +
               '" value="' + (z.preis == null ? '' : F.esc(String(z.preis).replace('.', ','))) +
-              '" placeholder="—"></td>';
-          if (seite === 'ein') {
-            return '<tr><td>' + kopf + '</td>' + mitte +
-              '<td>' + F.s(x.echt) + '</td>' +
-              '<td><button class="chip sm" data-tun="ruecklauf" data-seite="ein" data-i="' + i +
-                '" title="Kommt beim Herstellen nichts davon zurück? Dann anklicken.">' +
-                (z.keinRuecklauf ? 'nein' : 'ja') + '</button></td>' +
-              '<td>' + F.s(x.kosten) + '</td>' +
-              '<td><button class="chip sm" data-tun="weg" data-seite="ein" data-i="' + i + '">✕</button></td></tr>';
-          }
-          return '<tr><td>' + kopf + '</td>' + mitte +
-            '<td>' + F.s(x.menge) + '</td><td>' + F.s(x.wert) + '</td>' +
-            '<td><button class="chip sm" data-tun="weg" data-seite="aus" data-i="' + i + '">✕</button></td></tr>';
+              '" placeholder="—"></td>' +
+            '<td data-out="ein-echt-' + i + '">' + F.s(x.echt) + '</td>' +
+            '<td><button class="chip" data-tun="ruecklauf" data-seite="ein" data-i="' + i +
+              '" title="Kommt beim Herstellen nichts davon zurück? Dann anklicken.">' +
+              (z.keinRuecklauf ? 'nein' : 'ja') + '</button></td>' +
+            '<td data-out="ein-kosten-' + i + '">' + F.s(x.kosten) + '</td>' +
+            '<td><button class="btn sm ghost" data-tun="weg" data-seite="ein" data-i="' + i + '">✕</button></td></tr>';
         }).join('');
+
+        el.ausRows.innerHTML = d.ausZeilen.map(function (x, i) {
+          var z = x.z;
+          return '<tr>' +
+            '<td>' + nameZelle('aus', i, z) + '</td>' +
+            '<td><input class="num" style="max-width:74px" data-feld="menge" data-seite="aus" data-i="' + i +
+              '" value="' + F.esc(String(z.menge).replace('.', ',')) + '"></td>' +
+            '<td><input class="num" style="max-width:104px" data-feld="preis" data-seite="aus" data-i="' + i +
+              '" value="' + (z.preis == null ? '' : F.esc(String(z.preis).replace('.', ','))) +
+              '" placeholder="—"></td>' +
+            '<td data-out="aus-menge-' + i + '">' + F.s(x.menge) + '</td>' +
+            '<td data-out="aus-wert-' + i + '">' + F.s(x.wert) + '</td>' +
+            '<td><button class="btn sm ghost" data-tun="weg" data-seite="aus" data-i="' + i + '">✕</button></td></tr>';
+        }).join('');
+
+        boxen(d);
+      }
+
+      /* Rechnet nach und traegt nur die errechneten Zellen nach. Ruehrt
+         kein Eingabefeld an. */
+      function aktualisiere() {
+        var d = rechne();
+        d.einZeilen.forEach(function (x, i) {
+          var a = el.einRows.querySelector('[data-out="ein-echt-' + i + '"]');
+          var b = el.einRows.querySelector('[data-out="ein-kosten-' + i + '"]');
+          if (a) a.textContent = F.s(x.echt);
+          if (b) b.textContent = F.s(x.kosten);
+        });
+        d.ausZeilen.forEach(function (x, i) {
+          var a = el.ausRows.querySelector('[data-out="aus-menge-' + i + '"]');
+          var b = el.ausRows.querySelector('[data-out="aus-wert-' + i + '"]');
+          if (a) a.textContent = F.s(x.menge);
+          if (b) b.textContent = F.s(x.wert);
+        });
+        boxen(d);
       }
 
       function line(l, v, dim, total) {
@@ -385,11 +481,7 @@
           '><span>' + l + '</span><span>' + v + '</span></div>';
       }
 
-      function rechnenUndZeigen() {
-        var d = rechne();
-        el.einRows.innerHTML = zeilenHtml('ein', d.einZeilen, d);
-        el.ausRows.innerHTML = zeilenHtml('aus', d.ausZeilen, d);
-
+      function boxen(d) {
         var craft = S.modus === 'craft';
         el.kostenBox.innerHTML =
           line('Einkauf', F.s(d.einkauf)) +
@@ -402,11 +494,12 @@
           line('Steuer', '−' + F.s(d.steuer), S.gilde) +
           line('Verkaufsorder-Gebühr', '−' + F.s(d.orderVerkauf), S.gilde || !S.verkaufsorder) +
           line('Netto-Erlös', F.s(d.netto), false, true) +
-          '<div class="big ' + (d.gewinn >= 0 ? 'pos' : 'neg') + '" style="margin-top:var(--s3)">' +
-            F.sg(d.gewinn) + ' Silber</div>' +
-          '<div class="mut">' +
-            (isFinite(d.jeStueck) ? F.sg(d.jeStueck) + ' je Stück · ' : '') +
-            (isFinite(d.marge) ? F.pct(d.marge) + ' Marge' : '') + '</div>' +
+          '<div class="stat" style="margin-top:var(--s3);background:none;border:none;padding:0">' +
+            '<div class="v ' + (d.gewinn >= 0 ? 'pos' : 'neg') + '">' + F.sg(d.gewinn) + ' Silber</div>' +
+            '<div class="s">' +
+              (isFinite(d.jeStueck) ? F.sg(d.jeStueck) + ' je Stück' : '') +
+              (isFinite(d.jeStueck) && isFinite(d.marge) ? ' · ' : '') +
+              (isFinite(d.marge) ? F.pct(d.marge) + ' Marge' : '') + '</div></div>' +
           (isFinite(d.breakEven)
             ? '<div class="mut" style="margin-top:var(--s2)">Ab ' + F.s(d.breakEven) +
               ' je Stück bist du bei null.</div>' : '') +
@@ -415,7 +508,7 @@
               ' Zeile(n) ohne Preis – der Gewinn ist so nicht belastbar</div>' : '');
       }
 
-      function render() {
+      function syncSeite() {
         el.craftBox.hidden = S.modus !== 'craft';
         el.stueckLbl.textContent = S.modus === 'craft' ? 'Crafts' : 'Einheiten';
         el.modusHint.textContent = S.modus === 'craft'
@@ -426,7 +519,6 @@
           el.gildeHint.textContent = 'Direkter Handel: Steuer und Ordergebühr entfallen. ' +
             'Der Preis ist der, den du unten einträgst.';
         }
-        rechnenUndZeigen();
       }
     }
   };

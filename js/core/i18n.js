@@ -91,7 +91,12 @@
       var teile = k.split(/(\{n\}|\{name\})/);
       var re = '';
       teile.forEach(function (t) {
-        if (t === '{n}' || t === '{name}') re += '([\\s\\S]*?)';
+        /* {n} steht fuer eine Zahl - dort darf kein Buchstabe stehen.
+           Sonst frisst ein kurzes Muster wie "{n}Stück" auch den Kopf
+           "Preis je Stück" und macht daraus "Preis je units".
+           {name} bleibt frei: dort stehen Orts- und Item-Namen. */
+        if (t === '{n}') re += '([^A-Za-zÀ-ÖØ-öø-ÿ]*?)';
+        else if (t === '{name}') re += '([\\s\\S]*?)';
         else re += t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       });
       MUSTER.push({ re: new RegExp('^' + re + '$'), ziel: w[k], len: k.length });

@@ -58,6 +58,11 @@ one button away.
 
 ![Free calculator](docs/bilder/10-freier-rechner.png)
 
+Type a name into a row, or press **choose** and search the full item list –
+around 2,900 entries, filtered as you type.
+
+![Choosing an item](docs/bilder/11-sucher.png)
+
 The **refining calculator** shows every tier of a family – leather, say –
 side by side, with the cheapest place to buy and the best place to sell. And
 because refining is a volume business, you can **sell to your guild** there:
