@@ -10,11 +10,17 @@
 #     AlbionToolkit-Setup.exe         dieselbe Datei ohne Versionsnummer
 #     AlbionToolkit.zip               dieselbe Datei ohne Versionsnummer
 #     latest.yml                      Fassung + Pruefsumme fuer den Selbstaktualisierer
+#     AlbionToolkit-Setup-1.0.1.exe.blockmap
+#                                     Bloecke des Installers, fuer den Teil-Download
 #
 # Ohne latest.yml findet das installierte Programm keine neue Fassung.
 # electron-builder schreibt sie nur, weil in der package.json ein
 # "publish"-Eintrag steht - hochgeladen wird sie hier, nicht von
 # electron-builder selbst.
+#
+# Die .blockmap gehoert mit hoch: mit ihr laedt eine bestehende
+# Installation nur die geaenderten Bloecke statt aller 99 MB. Fehlt sie,
+# laeuft es zwar trotzdem - dann aber jedes Mal der ganze Installer.
 #
 # Die beiden Kopien ohne Nummer gibt es, damit die README dauerhaft
 # verlinken kann: /releases/latest/download/AlbionToolkit-Setup.exe zeigt
@@ -75,13 +81,16 @@ jobs:
           Copy-Item $zip.FullName 'dist/AlbionToolkit.zip'
         shell: pwsh
 
-      - name: latest.yml muss da sein
+      - name: latest.yml und blockmap muessen da sein
         # Fehlt sie, wuerde sich niemand mehr selbst aktualisieren - und
         # das faellt erst Wochen spaeter auf. Deshalb hier hart abbrechen.
         run: |
           if (-not (Test-Path 'dist/latest.yml')) {
             throw 'latest.yml fehlt - ohne sie gibt es keine Selbstaktualisierung'
           }
+          $bm = Get-ChildItem dist -Filter '*.exe.blockmap' |
+                Where-Object { $_.Name -notlike '*__uninstaller*' }
+          if (-not $bm) { throw 'blockmap fehlt - dann laedt jede Aktualisierung den ganzen Installer' }
           Get-Content dist/latest.yml
         shell: pwsh
 
@@ -96,6 +105,7 @@ jobs:
           name: AlbionToolkit-Windows
           path: |
             dist/*.exe
+            dist/*.exe.blockmap
             dist/*.zip
             dist/latest.yml
           if-no-files-found: error
@@ -108,5 +118,6 @@ jobs:
           generate_release_notes: true
           files: |
             dist/*.exe
+            dist/*.exe.blockmap
             dist/*.zip
             dist/latest.yml

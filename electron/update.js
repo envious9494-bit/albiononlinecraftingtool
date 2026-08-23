@@ -107,9 +107,17 @@ function pruefen(win) {
 
   autoUpdater.logger = logger;
   autoUpdater.autoDownload = true;           /* still laden */
-  autoUpdater.autoInstallOnAppQuit = true;   /* beim Beenden einspielen */
+  /* Beim Nachpruefen wird geladen und geprueft, aber nichts eingespielt -
+     sonst legte ein Testlauf eine Fassung ueber die echte Installation. */
+  autoUpdater.autoInstallOnAppQuit = !probe;  /* beim Beenden einspielen */
   autoUpdater.allowPrerelease = false;       /* Vorabfassungen aussen vor */
-  if (probe) autoUpdater.forceDevUpdateConfig = true;
+  /* Es wird kein Web-Installer gebaut. Ohne diese Zeile warnt
+     electron-updater bei jedem Lauf danach. */
+  autoUpdater.disableWebInstaller = true;
+  /* Nur fuer ungepackte Laeufe: dann fehlt die app-update.yml, die
+     electron-builder sonst neben die Anwendung legt. Ist die Fassung
+     gepackt, ist sie da - und diese Umleitung waere falsch. */
+  if (probe && !app.isPackaged) autoUpdater.forceDevUpdateConfig = true;
 
   autoUpdater.on('checking-for-update', function () {
     standSetzen(win, { zustand: 'sieht nach' });

@@ -110,6 +110,8 @@ Neues oder ist gerade kein Netz da, passiert gar nichts.
 Unter **Einstellungen → Fassung** steht, was installiert ist und was die
 letzte Abfrage ergeben hat.
 
+![Fassung](docs/bilder/12-fassung.png)
+
 ### Drei Sprachen
 
 Deutsch, Englisch, Spanisch. Die Item-Namen sind dabei **nicht übersetzt**,

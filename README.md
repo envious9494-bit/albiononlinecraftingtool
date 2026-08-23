@@ -106,6 +106,8 @@ nothing new, or no network right now, nothing happens at all.
 
 **Settings → Version** shows what is installed and what the last check found.
 
+![Version](docs/bilder/12-fassung.png)
+
 ### Three languages
 
 German, English, Spanish. The item names are **not translated** – they are
