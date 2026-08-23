@@ -1,47 +1,80 @@
-/* Nachsehen, ob es eine neuere Fassung gibt.
+/* Haelt sich selbst auf dem neuesten Stand - ohne zu fragen.
 
-   Bewusst zurueckhaltend:
-   - Es wird nur *gefragt*, nichts heruntergeladen und nichts installiert.
-     Ein Klick oeffnet die Release-Seite im Browser, den Installer startet
-     man wie immer selbst. Damit braucht es weder eine zusaetzliche
-     Abhaengigkeit noch das Abschalten der Signaturpruefung, die bei
-     unsignierten Dateien sonst im Weg stuende.
-   - Faellt die Abfrage aus - kein Netz, GitHub nicht erreichbar, Antwort
-     unverstaendlich - passiert gar nichts. Ein Fehlerfenster beim Start
-     waere schlimmer als eine verpasste Version.
-   - Wer eine Fassung ueberspringt, wird zu genau dieser nicht mehr
-     gefragt.
-   - Nur in der installierten Fassung. Beim Entwickeln waere es Laerm.
+   Ablauf: beim Start wird still bei GitHub nachgesehen. Gibt es eine
+   neuere Fassung, wird sie im Hintergrund geladen und beim naechsten
+   Beenden eingespielt. Es erscheint kein Fenster und keine Frage.
+
+   Warum kein Browser-Download mehr: electron-updater holt den Installer
+   selbst und prueft ihn gegen die SHA-512-Summe aus der latest.yml, die
+   electron-builder beim Bauen erzeugt. Eine Datei, die so hereinkommt,
+   traegt kein "Mark of the Web" - deshalb faellt auch die blaue
+   SmartScreen-Meldung weg, die beim Herunterladen ueber den Browser
+   erscheint.
+
+   Auf die Signaturpruefung von Windows kann sich das nicht stuetzen: das
+   Programm ist nicht signiert. Die Pruefsumme aus der latest.yml ist die
+   Absicherung - und die kommt ueber HTTPS von GitHub.
+
+   Grundsatz wie vorher: faellt irgendetwas aus - kein Netz, GitHub nicht
+   erreichbar, Antwort unverstaendlich - passiert gar nichts. Ein
+   Fehlerfenster beim Start waere schlimmer als eine verpasste Fassung.
+   Deshalb faengt hier jeder Pfad seine Fehler selbst ab.
 */
 'use strict';
 
-const { app, dialog, shell, net } = require('electron');
+const { app } = require('electron');
 const path = require('node:path');
 const fs = require('node:fs');
 
-const REPO = 'envious9494-bit/albiononlinecraftingtool';
-const SEITE = 'https://github.com/' + REPO + '/releases/latest';
-const VERZOEGERUNG = 4000;   // erst das Fenster, dann die Frage
+const VERZOEGERUNG = 4000;   // erst das Fenster zeigen, dann das Netz belasten
 
-/* --- gemerkte Entscheidungen ------------------------------------------- */
-function datei() {
-  return path.join(app.getPath('userData'), 'update.json');
+/* --- Tagebuch -----------------------------------------------------------
+   Still heisst nicht spurlos. Wenn eine Aktualisierung einmal klemmt,
+   soll nachlesbar sein, woran es lag - ohne dass jemand dafuer beim
+   Start angesprochen wird. Die Datei wird bei jedem Start neu begonnen,
+   damit sie nicht unbegrenzt waechst. */
+function logDatei() {
+  return path.join(app.getPath('userData'), 'update.log');
 }
 
-function lesen() {
-  try { return JSON.parse(fs.readFileSync(datei(), 'utf8')) || {}; }
-  catch (e) { return {}; }
+let ersterEintrag = true;
+function notiz(text) {
+  try {
+    const zeile = new Date().toISOString() + '  ' + text + '\n';
+    if (ersterEintrag) { fs.writeFileSync(logDatei(), zeile); ersterEintrag = false; }
+    else fs.appendFileSync(logDatei(), zeile);
+  } catch (e) { /* dann eben ohne Tagebuch */ }
+  if (process.env.AO_UPDATE_TEST) console.log('UPDATE ' + text);
 }
 
-function schreiben(d) {
-  try { fs.writeFileSync(datei(), JSON.stringify(d)); }
-  catch (e) { /* dann wird eben nochmal gefragt */ }
+/* electron-updater erwartet einen Logger mit diesen vier Namen. */
+const logger = {
+  info: function (m) { notiz('info  ' + m); },
+  warn: function (m) { notiz('warn  ' + m); },
+  error: function (m) { notiz('FEHLER ' + m); },
+  debug: function () { /* zu gespraechig */ }
+};
+
+/* --- Stand fuer die Oberflaeche -----------------------------------------
+   Die Seite laeuft abgeschottet: kein Node, kein Preload, keine
+   IPC-Bruecke. Der Stand wird deshalb von hier aus hineingeschrieben -
+   nur in diese eine Richtung, ohne dass die Seite dafuer Rechte braucht.
+   Gelesen wird er in js/views/settings.js. */
+let STAND = { zustand: 'ruht', version: app.getVersion() };
+
+function standSetzen(win, neu) {
+  STAND = Object.assign({}, STAND, neu);
+  if (!win || win.isDestroyed()) return;
+  win.webContents.executeJavaScript(
+    'window.AO && (AO.update = ' + JSON.stringify(STAND) + ') && ' +
+    'document.dispatchEvent(new CustomEvent("ao:update"));',
+    true
+  ).catch(function () { /* Seite noch nicht so weit - beim naechsten Mal */ });
 }
 
 /* --- Versionsvergleich --------------------------------------------------
-   Reicht fuer "1.2.10" gegen "1.3.0". Nachgestelltes wie "-beta" wird
-   abgeschnitten und gilt als aelter, damit eine Vorabfassung keine
-   Aktualisierung ausloest. */
+   electron-updater vergleicht selbst; das hier bleibt, weil es geprueft
+   ist und an zwei Stellen zum Nachsehen gebraucht wird. */
 function teile(v) {
   return String(v || '').replace(/^v/, '').split('-')[0].split('.')
     .map(function (x) { return parseInt(x, 10) || 0; });
@@ -56,131 +89,64 @@ function istNeuer(fremd, eigen) {
   return false;
 }
 
-/* --- Texte --------------------------------------------------------------
-   Die Sprache steht im Browserspeicher der Seite; das Hauptfenster fragt
-   sie dort ab. Klappt das nicht, bleibt es bei Deutsch. */
-const TEXTE = {
-  de: {
-    titel: 'Neue Fassung verfügbar',
-    kopf: 'Albion Toolkit {neu} ist da.',
-    text: 'Du hast {alt}. Die neue Fassung wird über den Installer eingespielt; ' +
-          'deine eigenen Preise und Einstellungen bleiben erhalten.',
-    laden: 'Jetzt herunterladen',
-    spaeter: 'Später',
-    ueberspringen: 'Diese Fassung überspringen'
-  },
-  en: {
-    titel: 'A new version is available',
-    kopf: 'Albion Toolkit {neu} is out.',
-    text: 'You have {alt}. The new version is installed through the installer; ' +
-          'your own prices and settings are kept.',
-    laden: 'Download now',
-    spaeter: 'Later',
-    ueberspringen: 'Skip this version'
-  },
-  es: {
-    titel: 'Hay una versión nueva',
-    kopf: 'Albion Toolkit {neu} ya está disponible.',
-    text: 'Tienes {alt}. La versión nueva se instala con el instalador; ' +
-          'tus precios y ajustes propios se conservan.',
-    laden: 'Descargar ahora',
-    spaeter: 'Más tarde',
-    ueberspringen: 'Omitir esta versión'
-  }
-};
-
-function spracheHolen(win) {
-  return win.webContents
-    .executeJavaScript("(window.AO && AO.i18n && AO.i18n.lang && AO.i18n.lang()) || 'de'", true)
-    .then(function (l) { return TEXTE[l] ? l : 'de'; })
-    .catch(function () { return 'de'; });
-}
-
-/* --- Abfrage ------------------------------------------------------------ */
-function neuesteFassung() {
-  return new Promise(function (fertig, fehler) {
-    const anfrage = net.request({
-      method: 'GET',
-      url: 'https://api.github.com/repos/' + REPO + '/releases/latest'
-    });
-    anfrage.setHeader('Accept', 'application/vnd.github+json');
-    anfrage.setHeader('User-Agent', 'AlbionToolkit/' + app.getVersion());
-
-    let roh = '';
-    const abbruch = setTimeout(function () {
-      try { anfrage.abort(); } catch (e) { /* egal */ }
-      fehler(new Error('Zeitüberschreitung'));
-    }, 8000);
-
-    anfrage.on('response', function (antwort) {
-      antwort.on('data', function (stueck) { roh += stueck; });
-      antwort.on('end', function () {
-        clearTimeout(abbruch);
-        try {
-          const d = JSON.parse(roh);
-          if (!d || !d.tag_name) throw new Error('keine Fassung genannt');
-          fertig({ version: d.tag_name, seite: d.html_url || SEITE });
-        } catch (e) { fehler(e); }
-      });
-    });
-    anfrage.on('error', function (e) { clearTimeout(abbruch); fehler(e); });
-    anfrage.end();
-  });
-}
-
-/* Der Inhalt des Fensters - getrennt, damit er sich ohne Electron
-   nachlesen und pruefen laesst. */
-function nachricht(lang, neueVersion, eigeneVersion) {
-  const t = TEXTE[lang] || TEXTE.de;
-  return {
-    type: 'info',
-    title: t.titel,
-    message: t.kopf.replace('{neu}', teile(neueVersion).join('.')),
-    detail: t.text.replace('{alt}', eigeneVersion),
-    buttons: [t.laden, t.spaeter, t.ueberspringen],
-    defaultId: 0,
-    cancelId: 1,
-    noLink: true
-  };
-}
-
-function fragen(win, neu, eigene) {
-  return spracheHolen(win).then(function (lang) {
-    const inhalt = nachricht(lang, neu.version, eigene);
-    if (process.env.AO_UPDATE_TEST) {
-      console.log('DIALOG ' + JSON.stringify({ sprache: lang, titel: inhalt.title,
-        text: inhalt.message, knoepfe: inhalt.buttons }));
-    }
-    return dialog.showMessageBox(win, inhalt).then(function (antwort) {
-      if (antwort.response === 0) shell.openExternal(neu.seite);
-      if (antwort.response === 2) {
-        const d = lesen();
-        d.uebersprungen = neu.version;
-        schreiben(d);
-      }
-    });
-  });
-}
-
-/* Einstiegspunkt. Wirft nie - jeder Fehlschlag endet still. */
+/* --- Einstiegspunkt ----------------------------------------------------- */
 function pruefen(win) {
-  /* AO_UPDATE_TEST=<version> laesst die Pruefung auch ungepackt laufen und
-     tut so, als waere die angegebene Fassung installiert. Nur zum
-     Nachpruefen - im Alltag ist die Variable nicht gesetzt. */
+  /* Ungepackt gibt es keine installierte Fassung, die sich ersetzen
+     liesse - electron-updater bricht dort ohnehin ab. AO_UPDATE_TEST
+     laesst die Pruefung trotzdem laufen, um sie nachsehen zu koennen. */
   const probe = process.env.AO_UPDATE_TEST;
   if (!app.isPackaged && !probe) return;
-  const eigene = (probe && probe !== '1') ? probe : app.getVersion();
+
+  let autoUpdater;
+  try {
+    autoUpdater = require('electron-updater').autoUpdater;
+  } catch (e) {
+    notiz('electron-updater nicht ladbar: ' + e.message);
+    return;
+  }
+
+  autoUpdater.logger = logger;
+  autoUpdater.autoDownload = true;           /* still laden */
+  autoUpdater.autoInstallOnAppQuit = true;   /* beim Beenden einspielen */
+  autoUpdater.allowPrerelease = false;       /* Vorabfassungen aussen vor */
+  if (probe) autoUpdater.forceDevUpdateConfig = true;
+
+  autoUpdater.on('checking-for-update', function () {
+    standSetzen(win, { zustand: 'sieht nach' });
+  });
+  autoUpdater.on('update-not-available', function () {
+    notiz('nichts Neues - ' + app.getVersion() + ' ist aktuell');
+    standSetzen(win, { zustand: 'aktuell' });
+  });
+  autoUpdater.on('update-available', function (i) {
+    notiz('neue Fassung ' + i.version + ' gefunden, wird geladen');
+    standSetzen(win, { zustand: 'laedt', neu: i.version });
+  });
+  autoUpdater.on('download-progress', function (p) {
+    standSetzen(win, { zustand: 'laedt', prozent: Math.round(p.percent) });
+  });
+  autoUpdater.on('update-downloaded', function (i) {
+    notiz('Fassung ' + i.version + ' liegt bereit, wird beim Beenden eingespielt');
+    standSetzen(win, { zustand: 'bereit', neu: i.version });
+  });
+  autoUpdater.on('error', function (e) {
+    notiz('Abfrage fehlgeschlagen: ' + ((e && e.message) || e));
+    standSetzen(win, { zustand: 'fehlgeschlagen' });
+  });
 
   setTimeout(function () {
-    neuesteFassung().then(function (neu) {
-      if (!istNeuer(neu.version, eigene)) return;
-      if (lesen().uebersprungen === neu.version) return;
-      if (!win || win.isDestroyed()) return;
-      return fragen(win, neu, eigene);
-    }).catch(function () {
-      /* Still. Kein Netz ist kein Grund, jemanden anzusprechen. */
-    });
+    /* checkForUpdates gibt ein Promise zurueck, das bei Netzfehlern
+       abgelehnt wird - unbehandelt waere das eine Warnung auf der
+       Konsole und im schlimmsten Fall ein Absturz. */
+    try {
+      const p = autoUpdater.checkForUpdates();
+      if (p && p.catch) p.catch(function () { /* das error-Ereignis hat es schon notiert */ });
+    } catch (e) {
+      notiz('Abfrage nicht moeglich: ' + e.message);
+    }
   }, VERZOEGERUNG);
 }
 
-module.exports = { pruefen, istNeuer, teile, nachricht, neuesteFassung, TEXTE };
+function stand() { return STAND; }
+
+module.exports = { pruefen, istNeuer, teile, stand };

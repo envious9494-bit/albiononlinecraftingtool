@@ -63,6 +63,16 @@
         '</div>' +
       '</div>' +
 
+      /* Nur in der Windows-Fassung sichtbar: im Browser gibt es nichts
+         zu aktualisieren. AO.update setzt der Hauptprozess von aussen. */
+      '<div class="card" style="margin-top:var(--s4)" data-x="updCard" hidden>' +
+        '<div class="card-head"><h3>Fassung</h3></div>' +
+        '<div class="card-body"><div data-x="updBox"></div>' +
+          '<div class="hint" style="margin-top:var(--s3)">Neue Fassungen werden im ' +
+          'Hintergrund geladen und beim nächsten Beenden eingespielt. Deine Preise ' +
+          'und Einstellungen bleiben dabei erhalten.</div></div>' +
+      '</div>' +
+
       '<div class="card" style="margin-top:var(--s4)">' +
         '<div class="card-head"><h3>Woher die Zahlen kommen</h3></div>' +
         '<div class="card-body">' +
@@ -83,6 +93,9 @@
       var el = {};
       U.qa('[data-x]', root).forEach(function (n) { el[n.dataset.x] = n; });
       var segs = U.qa('.seg', root);
+
+      updZeigen();
+      document.addEventListener('ao:update', updZeigen);
 
       U.fill(el.server, Object.keys(AO.data.servers).map(function (k) {
         return { v: k, n: AO.data.servers[k].name };
@@ -190,6 +203,32 @@
           '<div class="dl"><span>Rezepte im Toolkit</span><span>' +
             F.s(AO.data.items.length + AO.data.consumables.length) + '</span></div>' +
           '<div class="dl"><span>Belegter Browserspeicher</span><span>' + F.n1(bytes / 1024) + ' KB</span></div>';
+      }
+
+      /* Der Stand kommt aus electron/update.js. Im Browser fehlt er - dann
+         bleibt die Karte weg. */
+      function updZeigen() {
+        var u = window.AO && AO.update;
+        if (!u) { el.updCard.hidden = true; return; }
+        el.updCard.hidden = false;
+        var text, chip = '';
+        if (u.zustand === 'bereit') {
+          text = 'Fassung ' + F.esc(u.neu) + ' liegt bereit';
+          chip = '<span class="chip ok">wird beim Beenden eingespielt</span>';
+        } else if (u.zustand === 'laedt') {
+          text = 'Fassung ' + F.esc(u.neu || '') + ' wird geladen';
+          chip = '<span class="chip">' + (u.prozent != null ? u.prozent + ' %' : 'läuft') + '</span>';
+        } else if (u.zustand === 'aktuell') {
+          text = 'Du hast die neueste Fassung';
+        } else if (u.zustand === 'fehlgeschlagen') {
+          text = 'Die Abfrage ist fehlgeschlagen';
+          chip = '<span class="chip warn">nächster Start erneut</span>';
+        } else {
+          text = 'Wird nachgesehen …';
+        }
+        el.updBox.innerHTML =
+          '<div class="dl"><span>Installiert</span><span>' + F.esc(u.version || '?') + '</span></div>' +
+          '<div class="dl"><span>Stand</span><span>' + text + ' ' + chip + '</span></div>';
       }
     }
   };

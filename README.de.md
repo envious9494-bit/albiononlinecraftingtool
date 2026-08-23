@@ -94,13 +94,21 @@ auch ohne Farbe erkennbar.
 
 ![Kontrastfarben](docs/bilder/08-kontrastfarben.png)
 
-### Meldet sich, wenn es etwas Neues gibt
+### Hält sich selbst auf dem neuesten Stand
 
 Der Windows-Client sieht beim Start still nach, ob eine neuere Fassung
-vorliegt, und fragt dann einmal nach: *Jetzt herunterladen* · *Später* ·
-*Diese Fassung überspringen*. Es wird nur gefragt – geladen und installiert
-wird nichts ohne dich. Gibt es nichts Neues oder ist gerade kein Netz da,
-passiert gar nichts.
+vorliegt, lädt sie im Hintergrund und spielt sie beim nächsten Beenden ein.
+Kein Fenster, keine Frage, kein Herunterladen von Hand – und weil der
+Installer nie durch den Browser läuft, erscheint auch die blaue
+SmartScreen-Meldung nicht mehr. Deine eigenen Preise und Einstellungen
+bleiben erhalten.
+
+Jeder Download wird gegen die SHA-512-Summe geprüft, die der Bau in die
+`latest.yml` schreibt; was nicht dazu passt, wird verworfen. Gibt es nichts
+Neues oder ist gerade kein Netz da, passiert gar nichts.
+
+Unter **Einstellungen → Fassung** steht, was installiert ist und was die
+letzte Abfrage ergeben hat.
 
 ### Drei Sprachen
 

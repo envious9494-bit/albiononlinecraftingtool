@@ -92,12 +92,19 @@ relying on colour at all.
 
 ![Contrast colours](docs/bilder/08-kontrastfarben.png)
 
-### It tells you when something new is out
+### It keeps itself up to date
 
-The Windows client checks quietly at startup whether a newer version exists and
-then asks once: *Download now* · *Later* · *Skip this version*. It only asks –
-nothing is downloaded or installed without you. If there is nothing new, or no
-network right now, nothing happens at all.
+The Windows client checks quietly at startup whether a newer version exists,
+downloads it in the background and installs it the next time you quit. No
+window, no question, no manual download – and because the installer never
+passes through the browser, the blue SmartScreen warning does not appear
+either. Your own prices and settings are kept.
+
+Every download is checked against the SHA-512 checksum that the build writes
+into `latest.yml`; a file that does not match is discarded. If there is
+nothing new, or no network right now, nothing happens at all.
+
+**Settings → Version** shows what is installed and what the last check found.
 
 ### Three languages
 

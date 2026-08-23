@@ -9,6 +9,12 @@
 #     AlbionToolkit-1.0.1.zip         portable Fassung
 #     AlbionToolkit-Setup.exe         dieselbe Datei ohne Versionsnummer
 #     AlbionToolkit.zip               dieselbe Datei ohne Versionsnummer
+#     latest.yml                      Fassung + Pruefsumme fuer den Selbstaktualisierer
+#
+# Ohne latest.yml findet das installierte Programm keine neue Fassung.
+# electron-builder schreibt sie nur, weil in der package.json ein
+# "publish"-Eintrag steht - hochgeladen wird sie hier, nicht von
+# electron-builder selbst.
 #
 # Die beiden Kopien ohne Nummer gibt es, damit die README dauerhaft
 # verlinken kann: /releases/latest/download/AlbionToolkit-Setup.exe zeigt
@@ -69,6 +75,16 @@ jobs:
           Copy-Item $zip.FullName 'dist/AlbionToolkit.zip'
         shell: pwsh
 
+      - name: latest.yml muss da sein
+        # Fehlt sie, wuerde sich niemand mehr selbst aktualisieren - und
+        # das faellt erst Wochen spaeter auf. Deshalb hier hart abbrechen.
+        run: |
+          if (-not (Test-Path 'dist/latest.yml')) {
+            throw 'latest.yml fehlt - ohne sie gibt es keine Selbstaktualisierung'
+          }
+          Get-Content dist/latest.yml
+        shell: pwsh
+
       - name: Ergebnis auflisten
         run: Get-ChildItem dist -File | Select-Object Name, Length
         shell: pwsh
@@ -81,6 +97,7 @@ jobs:
           path: |
             dist/*.exe
             dist/*.zip
+            dist/latest.yml
           if-no-files-found: error
 
       - name: Release veroeffentlichen
@@ -92,3 +109,4 @@ jobs:
           files: |
             dist/*.exe
             dist/*.zip
+            dist/latest.yml
